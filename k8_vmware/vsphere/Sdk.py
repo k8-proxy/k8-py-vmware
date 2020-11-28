@@ -31,6 +31,7 @@ class Sdk:
             if (self._service_instance is None):
                 self.service_instance = connect.SmartConnect(host=host, user=user, pwd=pwd, sslContext=ssl_context)
         except Exception as exception:
+            print(exception)
             if(exception._wsdlName == 'InvalidLogin'):
                 raise Exception(f"[vsphere][sdk] login failed for user {user}")
             else:
