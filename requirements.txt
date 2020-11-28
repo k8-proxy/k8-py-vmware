@@ -1,0 +1,6 @@
+pyvmomi
+python-dotenv
+
+# for development
+pytest
+coverage
