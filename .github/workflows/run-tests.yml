@@ -23,4 +23,8 @@ jobs:
           pip install -e .
 
       - name: Run tests with pytest
-        run: pytest 
+        run: pytest
+        env: # Or as an environment variable
+          VSPHERE_HOST: ${{ secrets.VSPHERE_HOST }}
+          VSPHERE_USERNAME: ${{ secrets.VSPHERE_USERNAME }}
+          VSPHERE_PASSWORD: ${{ secrets.VSPHERE_PASSWORD }}
