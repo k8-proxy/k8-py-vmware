@@ -13,4 +13,3 @@ class test_Config(TestCase):
         assert server_details.get('host'    ) is not None
         assert server_details.get('username') is not None
         assert server_details.get('password') is not None
-        print(server_details)
