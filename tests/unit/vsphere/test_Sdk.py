@@ -4,6 +4,7 @@ from k8_vmware.vsphere.Sdk import Sdk
 
 
 class test_Sdk(TestCase):
+
     def setUp(self):
         self.sdk = Sdk()
 
@@ -15,6 +16,16 @@ class test_Sdk(TestCase):
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductVersion == "6.0"
+
+    def test_folders(self):
+        folders = self.sdk.folders()
+        assert str(folders) == "['vim.Folder:ha-folder-vm']"
+
+    def test_vms(self):
+        vms = self.sdk.vms()
+        assert len(vms) > 0
+        for vm in vms:
+            assert vm._wsdlName == "VirtualMachine"
 
     def test_service_instance(self):
         service_instance = self.sdk.service_instance()
