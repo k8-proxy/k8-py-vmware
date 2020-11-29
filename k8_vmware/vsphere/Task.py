@@ -1,9 +1,11 @@
 import pyVmomi
 
+from k8_vmware.vsphere.Sdk import Sdk
+
 
 class Task:
-    def __init__(self, sdk):
-        self.sdk = sdk
+    def __init__(self):
+        self.sdk = Sdk()
 
     def wait_for_task(self, task):
         self.wait_for_tasks([task])

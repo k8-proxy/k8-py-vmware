@@ -63,6 +63,10 @@ class VM:
     def summary(self):
         return self.vm.summary                              # will make REST call to RetrievePropertiesEx
 
+    def task(self):
+        from k8_vmware.vsphere.VM_Task import VM_Task       # have to do this import here due to circular dependencies (i.e. VM_Task imports VM)
+        return VM_Task(self)
+
     def runtime(self):
         return self.vm.summary.runtime
 

@@ -23,17 +23,6 @@ class test_Sdk(TestCase_VM):
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductVersion == "6.0"
 
-    def test_vm_create__delete_by_name(self):
-        print()
-        datastore       = "datastore1"
-        vm_name         = "unittest-test_vm_create__delete_by_name"
-        guest_id        = 'ubuntu64Guest'
-        vm_created_info = self.sdk.vm_create(datastore, vm_name, guest_id).info()
-        task_delete     = self.sdk.vm_delete__by_name(vm_name)
-
-        assert vm_created_info['Name'] == vm_name
-        assert task_delete.info.state == "success"
-
     # def test_find_iso(self):
     #     vm = self.sdk.find_by_host_name('haproxy-icap')
     #     #pprint(vm.info())
@@ -69,7 +58,6 @@ class test_Sdk(TestCase_VM):
     def test_get_object_virtual_machine(self):
         name = self.vm.name()
         vm   = self.sdk.get_object_virtual_machine(name)
-        print('===')
         assert vm.name() == name
 
     def test_folders(self):

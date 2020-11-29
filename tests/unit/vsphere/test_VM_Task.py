@@ -3,6 +3,7 @@ from pprint import pprint
 import pyVmomi
 
 from k8_vmware.helpers.TestCase_VM import TestCase_VM
+from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Task import VM_Task
 
 
@@ -11,10 +12,10 @@ class test_VM_Task(TestCase_VM):
 
     def setUp(self):
         self.vm_name = test_VM_Task.vm_name
-        self.vm_task = VM_Task(sdk=self.sdk, vm=self.vm)
+        self.vm_task = VM_Task(vm=self.vm)
 
     def test__init__(self):
-        assert self.vm_task.sdk == self.sdk
+        assert type(self.vm_task.sdk) is Sdk
         assert self.vm_task.vm  == self.vm
         assert self.vm.name()   == self.vm_name
 

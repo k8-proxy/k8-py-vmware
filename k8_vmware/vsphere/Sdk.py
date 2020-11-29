@@ -13,7 +13,7 @@ from k8_vmware.Config import Config
 from k8_vmware.vsphere.VM import VM
 
 # see https://code.vmware.com/apis/968 for API details
-from k8_vmware.vsphere.Task import Task
+
 
 
 class Sdk:
@@ -21,7 +21,7 @@ class Sdk:
                                     # todo: check for side effects
 
     def __init__(self):
-        self._service_instance = None
+        pass
 
     # helper methods
     def unverified_ssl_context(self):
@@ -125,45 +125,6 @@ class Sdk:
         for host in hosts:
             if hasattr(host, 'resourcePool'):
                 return host.resourcePool
-
-    # todo refactor into VM_Create class
-    def vm_create(self, datastore, vm_name, guest_id):
-
-        service_instance = self.service_instance()
-        datacenter       = self.datacenter()
-        folder           = self.datacenter_folder()
-        resource_pool    = self.resource_pool()
-
-        datastore_path = '[' + datastore + '] ' + vm_name
-
-        # bare minimum VM shell, no disks. todo: add these as special options
-        vmx_file = pyVmomi.vim.vm.FileInfo(logDirectory=None,
-                                           snapshotDirectory=None,
-                                           suspendDirectory=None,
-                                           vmPathName=datastore_path)
-
-        config = pyVmomi.vim.vm.ConfigSpec(name=vm_name, memoryMB=128, numCPUs=1,
-                                           files=vmx_file, guestId=guest_id,
-                                           version='vmx-07')
-
-        task = folder.CreateVM_Task(config=config, pool=resource_pool)
-        Task(self).wait_for_task(task)
-
-        return  VM(task.info.result)        # return a vm object
-        #return task
-
-
-    def vm_delete(self, vm : VM):
-        if vm:
-            if vm.powered_on():
-                # todo: add power off task
-                pass
-            task_destroy = vm.vm.Destroy_Task()
-            return Task(self).wait_for_task(task_destroy)
-
-    def vm_delete__by_name(self, vm_name : str):
-        vm = self.find_by_name(vm_name)
-        return self.vm_delete(vm)
 
     def vms(self):
         vms = []
