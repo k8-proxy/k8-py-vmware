@@ -1,7 +1,10 @@
+from pprint import pprint
 from unittest import TestCase
 
 from k8_vmware.vsphere.Sdk import Sdk
 
+#from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
+#environ['show_soap_calls'] = "True"        # good to debug performance issues
 
 class test_Sdk(TestCase):
 
@@ -25,7 +28,7 @@ class test_Sdk(TestCase):
         vms = self.sdk.vms()
         assert len(vms) > 0
         for vm in vms:
-            assert vm._wsdlName == "VirtualMachine"
+            print(vm.name())
 
     def test_service_instance(self):
         service_instance = self.sdk.service_instance()

@@ -8,6 +8,7 @@ from    pyVim import connect
 from pyVim.connect import Disconnect
 
 from k8_vmware.Config import Config
+from k8_vmware.vsphere.VM import VM
 
 
 class Sdk:
@@ -42,13 +43,9 @@ class Sdk:
         pwd         = server['password']
         ssl_context = self.unverified_ssl_context()
         try:
-            print('[service_instance]')
             if (Sdk.cached_service_instance is None):
-                print(" >>> Logging in")
                 Sdk.cached_service_instance = connect.SmartConnect(host=host, user=user, pwd=pwd, sslContext=ssl_context)
                 atexit.register(Disconnect, self.service_instance)
-            else:
-                print(" >>> using cached version")
         except Exception as exception:
             if(exception._wsdlName == 'InvalidLogin'):
                 raise Exception(f"[vsphere][sdk] login failed for user {user}")
@@ -61,14 +58,13 @@ class Sdk:
         folders = []
         for child in self.content().rootFolder.childEntity:     # todo: add better support for datacenter
             datacenter = child                                  # this code assumes that this node is an of type 'vim.Datacenter:ha-datacenter'
-            if hasattr(datacenter, 'vmFolder'):                 # if it has folders
-                folders.append(datacenter.vmFolder)             # add it
+            if hasattr(datacenter, 'vmFolder'):                 # if it has folders addit
+                folders.append(datacenter.vmFolder)             # todo: add support for nested folders (see code at https://github.com/vmware/pyvmomi/blob/master/sample/getallvms.py#L58 )
         return folders
 
     def vms(self):
         vms = []
-
         for folder in self.folders():
             for vm in folder.childEntity:
-                vms.append(vm)
+                vms.append(VM(vm))
         return vms
