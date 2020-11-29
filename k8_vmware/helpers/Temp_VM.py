@@ -1,6 +1,7 @@
 from osbot_utils.utils.Misc import random_string
 
 from k8_vmware.vsphere.Sdk import Sdk
+from k8_vmware.vsphere.VM import VM
 
 
 class Temp_VM:
@@ -23,5 +24,5 @@ class Temp_VM:
         return self.vm
 
     def delete(self):
-        return self.sdk.vm_delete__by_name(self.vm_name)
+        return self.sdk.vm_delete(self.vm)
 
