@@ -1,11 +1,13 @@
 import atexit
+import json
 import  ssl
 
-import pyVmomi
+import  pyVmomi
 import  urllib3
 import  warnings
 from    pyVim import connect
-from pyVim.connect import Disconnect
+from    pyVim.connect import Disconnect
+from    pyVmomi       import VmomiSupport
 
 from k8_vmware.Config import Config
 from k8_vmware.vsphere.VM import VM
@@ -35,6 +37,13 @@ class Sdk:
 
     def content(self):
         return self.service_instance().RetrieveContent()
+
+    def json_dump(self, obj_type, moid):
+        si_stub  = self.service_instance()._stub
+        template = VmomiSupport.templateOf(obj_type)
+        encoder  = VmomiSupport.VmomiJSONEncoder
+        raw_obj  = template(moid, si_stub)
+        return json.dumps(raw_obj, cls=encoder, sort_keys=True, indent=4)
 
     def service_instance(self):
         server      = self.server_details()
@@ -68,3 +77,23 @@ class Sdk:
             for vm in folder.childEntity:
                 vms.append(VM(vm))
         return vms
+
+    def vms_names(self):
+        names = []
+        for vm in self.vms():
+            names.append(vm.name())
+        return names
+
+        # ## alternative way to get the names (via CreateContainerView)
+        # ## this does seem to make a couple less REST calls than the current view
+        # def names_v2(self):
+        #     # from pyVmomi import vim, vmodl
+        #     from pyVmomi import pyVmomi
+        #     content = Sdk().content()
+        #
+        #     objView = content.viewManager.CreateContainerView(content.rootFolder,
+        #                                                       [pyVmomi.vim.VirtualMachine],
+        #                                                       True)
+        #     vmList = objView.view
+        #     for vm in vmList:
+        #         print(vm.name)            # will make REST call here

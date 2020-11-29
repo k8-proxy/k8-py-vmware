@@ -13,6 +13,7 @@ class VM:
         config  = summary.config                # these values are retrieved on the initial call to self.vm.summary
         guest   = summary.guest                 # using self.vm.summary.guest here would had resulted in two more REST calls
         runtime = summary.runtime
+
         info = {
                     "Annotation"        : config.annotation      ,
                     "BootTime"          : str(runtime.bootTime)  ,
@@ -23,6 +24,7 @@ class VM:
                     "HostName"          : guest.hostName         ,
                     "IP"                : guest.ipAddress        ,
                     "MemorySizeMB"      : config.memorySizeMB    ,
+                    "MOID"              : self.vm._moId          ,
                     "Name"              : config.name            ,
                     "MaxCpuUsage"       : runtime.maxCpuUsage    ,
                     "MaxMemoryUsage"    : runtime.maxMemoryUsage ,

@@ -1,10 +1,10 @@
+import json
 from pprint import pprint
 from unittest import TestCase
-
 from k8_vmware.vsphere.Sdk import Sdk
 
-#from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
-#environ['show_soap_calls'] = "True"        # good to debug performance issues
+from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
+environ['show_soap_calls'] = "True"        # good to debug performance issues
 
 class test_Sdk(TestCase):
 
@@ -27,8 +27,11 @@ class test_Sdk(TestCase):
     def test_vms(self):
         vms = self.sdk.vms()
         assert len(vms) > 0
-        for vm in vms:
-            print(vm.name())
+
+    def test_names(self):
+        names = self.sdk.vms_names()
+        assert len(names) > 0
+        #print(names)
 
     def test_service_instance(self):
         service_instance = self.sdk.service_instance()
@@ -36,3 +39,12 @@ class test_Sdk(TestCase):
         assert service_instance.content.about.fullName           == 'VMware ESXi 6.7.0 build-16075168'
         assert service_instance.content.about.licenseProductName == 'VMware ESX Server'
         assert service_instance.content.about.osType             == 'vmnix-x86'
+
+    def test_dump_json(self):
+        obj_type = "VirtualMachine"
+        moid     = "1"
+
+        json_dump = self.sdk.json_dump(obj_type, moid)
+        json_data = json.loads(json_dump)
+        assert json_data['_vimid'  ] == moid
+        assert json_data['_vimtype'] == "vim.VirtualMachine"
