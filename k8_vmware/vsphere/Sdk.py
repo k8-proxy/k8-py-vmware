@@ -13,7 +13,7 @@ from k8_vmware.Config import Config
 from k8_vmware.vsphere.VM import VM
 
 # see https://code.vmware.com/apis/968 for API details
-from k8_vmware.vsphere.VM_Task import VM_Task
+from k8_vmware.vsphere.Task import Task
 
 
 class Sdk:
@@ -147,40 +147,23 @@ class Sdk:
                                            version='vmx-07')
 
         task = folder.CreateVM_Task(config=config, pool=resource_pool)
-        VM_Task(self).wait_for_task(task)
+        Task(self).wait_for_task(task)
 
         return  VM(task.info.result)        # return a vm object
         #return task
 
 
     def vm_delete(self, vm : VM):
-        pass
-
-    # name = "dinis-test-via-api"
-    #     vm = self.sdk.find_by_name(name)
-    #     pprint(vm.info())
-    #
-    #     si = self.sdk.service_instance()
-    #     # task_power_off = vm.vm.PowerOffVM_Task()
-    #     # wait_for_tasks(si, [task_power_off])
-    #
-    #     task_destroy = vm.vm.Destroy_Task()
-    #     wait_for_tasks(si, [task_destroy])
-    #
-    #     vm = self.sdk.find_by_name(name)
-    #     pprint(vm.info())
-    #     #pprint(self.sdk.vms()[16].info())
-
-    def vm_delete__by_name(self, vm_name : str):
-        vm = self.find_by_name(vm_name)
         if vm:
             if vm.powered_on():
                 # todo: add power off task
                 pass
-
             task_destroy = vm.vm.Destroy_Task()
-            return VM_Task(self).wait_for_task(task_destroy)
+            return Task(self).wait_for_task(task_destroy)
 
+    def vm_delete__by_name(self, vm_name : str):
+        vm = self.find_by_name(vm_name)
+        return self.vm_delete(vm)
 
     def vms(self):
         vms = []
