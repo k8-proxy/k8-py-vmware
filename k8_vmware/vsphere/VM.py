@@ -48,6 +48,18 @@ class VM:
     def name(self):
         return self.config().name
 
+    def moid(self):
+        return self.vm._moId
+
+    def powered_state(self):
+        return self.runtime().powerState
+
+    def powered_on(self):
+        return self.powered_state() == 'poweredOn'
+
+    def powered_off(self):
+        return self.powered_state() == 'poweredOff'
+
     def summary(self):
         return self.vm.summary                              # will make REST call to RetrievePropertiesEx
 

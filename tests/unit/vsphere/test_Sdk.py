@@ -5,55 +5,57 @@ from k8_vmware.vsphere.Sdk import Sdk
 
 #from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
 #environ['show_soap_calls'] = "True"        # good to debug performance issues
+from pyVmomi import pyVmomi
+#from pyVmomi import vim
+#from pyVmomi import vmodl
 
-from pyVmomi import vim
-from pyVmomi import vmodl
+# def wait_for_tasks(service_instance, tasks):
+#     """Given the service instance si and tasks, it returns after all the
+#    tasks are complete
+#    """
+#     property_collector = service_instance.content.propertyCollector
+#     task_list = [str(task) for task in tasks]
+#     # Create filter
+#     obj_specs = [pyVmomi.vmodl.query.PropertyCollector.ObjectSpec(obj=task)
+#                  for task in tasks]
+#     property_spec = pyVmomi.vmodl.query.PropertyCollector.PropertySpec(type=pyVmomi.vim.Task,
+#                                                                        pathSet=[],
+#                                                                        all=True)
+#     filter_spec = pyVmomi.vmodl.query.PropertyCollector.FilterSpec()
+#     filter_spec.objectSet = obj_specs
+#     filter_spec.propSet = [property_spec]
+#     pcfilter = property_collector.CreateFilter(filter_spec, True)
+#     try:
+#         version, state = None, None
+#         # Loop looking for updates till the state moves to a completed state.
+#         while len(task_list):
+#             update = property_collector.WaitForUpdates(version)
+#             for filter_set in update.filterSet:
+#                 for obj_set in filter_set.objectSet:
+#                     task = obj_set.obj
+#                     for change in obj_set.changeSet:
+#                         if change.name == 'info':
+#                             state = change.val.state
+#                         elif change.name == 'info.state':
+#                             state = change.val
+#                         else:
+#                             continue
+#
+#                         if not str(task) in task_list:
+#                             continue
+#
+#                         if state == pyVmomi.vim.TaskInfo.State.success:
+#                             # Remove task from taskList
+#                             task_list.remove(str(task))
+#                         elif state == pyVmomi.vim.TaskInfo.State.error:
+#                             raise task.info.error
+#             # Move to next version
+#             version = update.version
+#     finally:
+#         if pcfilter:
+#             pcfilter.Destroy()
+from k8_vmware.vsphere.VM import VM
 
-def wait_for_tasks(service_instance, tasks):
-    """Given the service instance si and tasks, it returns after all the
-   tasks are complete
-   """
-    property_collector = service_instance.content.propertyCollector
-    task_list = [str(task) for task in tasks]
-    # Create filter
-    obj_specs = [vmodl.query.PropertyCollector.ObjectSpec(obj=task)
-                 for task in tasks]
-    property_spec = vmodl.query.PropertyCollector.PropertySpec(type=vim.Task,
-                                                               pathSet=[],
-                                                               all=True)
-    filter_spec = vmodl.query.PropertyCollector.FilterSpec()
-    filter_spec.objectSet = obj_specs
-    filter_spec.propSet = [property_spec]
-    pcfilter = property_collector.CreateFilter(filter_spec, True)
-    try:
-        version, state = None, None
-        # Loop looking for updates till the state moves to a completed state.
-        while len(task_list):
-            update = property_collector.WaitForUpdates(version)
-            for filter_set in update.filterSet:
-                for obj_set in filter_set.objectSet:
-                    task = obj_set.obj
-                    for change in obj_set.changeSet:
-                        if change.name == 'info':
-                            state = change.val.state
-                        elif change.name == 'info.state':
-                            state = change.val
-                        else:
-                            continue
-
-                        if not str(task) in task_list:
-                            continue
-
-                        if state == vim.TaskInfo.State.success:
-                            # Remove task from taskList
-                            task_list.remove(str(task))
-                        elif state == vim.TaskInfo.State.error:
-                            raise task.info.error
-            # Move to next version
-            version = update.version
-    finally:
-        if pcfilter:
-            pcfilter.Destroy()
 
 class test_Sdk(TestCase):
 
@@ -62,12 +64,27 @@ class test_Sdk(TestCase):
 
     def test_about(self):
         content = self.sdk.about()
-        assert content.fullName              == "VMware ESXi 6.7.0 build-16075168"
         assert content.vendor                == "VMware, Inc."
         assert content.version               == "6.7.0"
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductVersion == "6.0"
+
+    def test_vm_create__delete_by_name(self):
+        print()
+        datastore       = "datastore1"
+        vm_name         = "unittest-test_vm_create__delete_by_name"
+        guest_id        = 'ubuntu64Guest'
+        vm_created_info = self.sdk.vm_create(datastore, vm_name, guest_id).info()
+        task_delete     = self.sdk.vm_delete__by_name(vm_name)
+
+        assert vm_created_info['Name'] == vm_name
+        assert task_delete.info.state == "success"
+
+    # def test_vm_delete_by_name(self):
+    #     print()
+    #     vm_name = "unittest-vm__test_vm_create"
+    #     assert self.sdk.vm_delete__by_name(vm_name) == True
 
 
     # def test_find_iso(self):
@@ -165,15 +182,20 @@ class test_Sdk(TestCase):
     #     wait_for_tasks(service_instance, [task])
 
     def test_find_by_host_name(self):
-        host_name = self.sdk.vms()[0].host_name()
-        #ip = self.sdk.vms()[3].dns()
-        assert self.sdk.find_by_host_name(host_name).host_name() == host_name
-
-        pprint(self.sdk.find_by_host_name('minio-server').info())
+        for vm in self.sdk.vms():
+            host_name = vm.host_name()
+            if host_name:
+                assert self.sdk.find_by_host_name(host_name).host_name() == host_name
+                return
+        print("Warning test ESX server had no VMs with host_names (dnsNames) setup")
 
     def test_find_by_ip(self):
-        ip = self.sdk.vms()[3].ip()
-        assert self.sdk.find_by_ip(ip).ip() == ip
+        for vm in self.sdk.vms():
+            ip = vm.ip()
+            if ip:
+                assert self.sdk.find_by_ip(ip).ip() == ip
+                return
+        print("Warning test ESX server had no VMs with IPs")
 
     def test_find_by_uuid(self):
         uuid = self.sdk.vms()[0].uuid()
@@ -181,7 +203,7 @@ class test_Sdk(TestCase):
 
     def test_get_object(self):
         name = self.sdk.vms()[0].name()
-        vm   = self.sdk.get_object(vim.VirtualMachine,name)
+        vm   = self.sdk.get_object(pyVmomi.vim.VirtualMachine,name)
         assert vm.name == name
 
     def test_get_object_virtual_machine(self):
@@ -208,13 +230,13 @@ class test_Sdk(TestCase):
     def test_service_instance(self):
         service_instance = self.sdk.service_instance()
         assert service_instance.content.about.apiVersion         == '6.7.3'
-        assert service_instance.content.about.fullName           == 'VMware ESXi 6.7.0 build-16075168'
         assert service_instance.content.about.licenseProductName == 'VMware ESX Server'
         assert service_instance.content.about.osType             == 'vmnix-x86'
 
     def test_dump_json(self):
+
         obj_type = "VirtualMachine"
-        moid     = "1"
+        moid     = self.sdk.vms()[0].moid()
 
         json_dump = self.sdk.json_dump(obj_type, moid)
         json_data = json.loads(json_dump)

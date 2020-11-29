@@ -18,3 +18,9 @@ Set Virtual environment
 Install k8_vmware package (as editable)
 
 ```pip install -e .```
+
+Configure the environment variables, by renaming the `.env.example` file top `.env` and set these values
+
+```export VSPHERE_HOST={IP of ESXi server}
+export VSPHERE_USERNAME={username}
+export VSPHERE_PASSWORD={password}``` 

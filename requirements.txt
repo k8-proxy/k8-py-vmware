@@ -3,4 +3,5 @@ python-dotenv
 
 # for development
 pytest
+#pytest-xdist       # didn't work (need to find out why)
 coverage
