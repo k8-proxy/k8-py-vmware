@@ -39,11 +39,16 @@ class Sdk:
     def content(self):
         return self.service_instance().RetrieveContent()
 
-    def find_by_host_name(self, host_Name):
+    def find_by_host_name(self, host_name):
         search_index = self.content().searchIndex
-        vm = search_index.FindByDnsName(datacenter=None, dnsName=host_Name, vmSearch=True)   # note: use host_name since the documentation of this method says "The DNS name for a virtual machine is the one returned from VMware tools, hostName."
+        vm = search_index.FindByDnsName(datacenter=None, dnsName=host_name, vmSearch=True)   # note: use host_name since the documentation of this method says "The DNS name for a virtual machine is the one returned from VMware tools, hostName."
         if vm:
             return VM(vm)
+
+    def find_by_name(self, name):
+        for vm in self.vms():
+            if vm.name() == name:
+                return vm
 
     def find_by_uuid(self, uuid):
         search_index = self.content().searchIndex
@@ -82,6 +87,16 @@ class Sdk:
 
         return Sdk.cached_service_instance
 
+    def datacenter(self):
+        for child in self.content().rootFolder.childEntity:
+            if child._wsdlName == 'Datacenter':
+                return child
+
+    def datacenter_folder(self):
+        datacenter = self.datacenter()
+        if hasattr(datacenter, 'vmFolder'):
+            return datacenter.vmFolder
+
     def folders(self):
         folders = []
         for child in self.content().rootFolder.childEntity:     # todo: add better support for datacenter
@@ -89,6 +104,24 @@ class Sdk:
             if hasattr(datacenter, 'vmFolder'):                 # if it has folders addit
                 folders.append(datacenter.vmFolder)             # todo: add support for nested folders (see code at https://github.com/vmware/pyvmomi/blob/master/sample/getallvms.py#L58 )
         return folders
+
+    def get_object(self, vim_type, name):
+        content = self.content()
+        container = content.viewManager.CreateContainerView(content.rootFolder, [vim_type], True)
+        for object in container.view:
+            if object.name == name:
+                return object
+
+    def get_object_virtual_machine(self, name):
+        vm = self.get_object(pyVmomi.vim.VirtualMachine, name)
+        if vm:
+            return VM(vm)
+
+    def resource_pool(self):
+        hosts =  self.datacenter().hostFolder.childEntity
+        for host in hosts:
+            if hasattr(host, 'resourcePool'):
+                return host.resourcePool
 
     def vms(self):
         vms = []
