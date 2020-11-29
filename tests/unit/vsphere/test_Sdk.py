@@ -3,8 +3,8 @@ from pprint import pprint
 from unittest import TestCase
 from k8_vmware.vsphere.Sdk import Sdk
 
-from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
-environ['show_soap_calls'] = "True"        # good to debug performance issues
+#from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
+#environ['show_soap_calls'] = "True"        # good to debug performance issues
 
 class test_Sdk(TestCase):
 
@@ -19,6 +19,20 @@ class test_Sdk(TestCase):
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductVersion == "6.0"
+
+    def test_find_by_host_name(self):
+        host_name = self.sdk.vms()[0].host_name()
+        #ip = self.sdk.vms()[3].dns()
+        assert self.sdk.find_by_host_name(host_name).host_name() == host_name
+
+    def test_find_by_ip(self):
+        ip = self.sdk.vms()[3].ip()
+        assert self.sdk.find_by_ip(ip).ip() == ip
+
+    def test_find_by_uuid(self):
+        uuid = self.sdk.vms()[0].uuid()
+        assert self.sdk.find_by_uuid(uuid).uuid() == uuid
+
 
     def test_folders(self):
         folders = self.sdk.folders()

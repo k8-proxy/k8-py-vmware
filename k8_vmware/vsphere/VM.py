@@ -10,6 +10,7 @@ class VM:
 
     def info(self):
         summary = self.summary()                # need to do this since each reference to self.vm.summary.config is call REST call to the server
+        #print(summary)
         config  = summary.config                # these values are retrieved on the initial call to self.vm.summary
         guest   = summary.guest                 # using self.vm.summary.guest here would had resulted in two more REST calls
         runtime = summary.runtime
@@ -38,6 +39,12 @@ class VM:
         if runtime.question != None: info['Question']  = runtime.question.text,
         return info
 
+    def host_name(self):
+        return self.guest().hostName
+
+    def ip(self):
+        return self.guest().ipAddress
+
     def name(self):
         return self.config().name
 
@@ -46,3 +53,9 @@ class VM:
 
     def runtime(self):
         return self.vm.summary.runtime
+
+    def uuid(self):
+        return self.config().uuid
+
+    def __str__(self):
+        return f'[VM] {self.name()}'

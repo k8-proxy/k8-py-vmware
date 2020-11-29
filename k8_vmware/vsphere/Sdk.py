@@ -12,6 +12,7 @@ from    pyVmomi       import VmomiSupport
 from k8_vmware.Config import Config
 from k8_vmware.vsphere.VM import VM
 
+# see https://code.vmware.com/apis/968 for API details
 
 class Sdk:
     cached_service_instance = None  # use this to prevent multiple calls to the connect.SmartConnect
@@ -33,10 +34,28 @@ class Sdk:
     # Sdk methods
 
     def about(self):
-        return self.service_instance().RetrieveContent().about
+        return self.content().about
 
     def content(self):
         return self.service_instance().RetrieveContent()
+
+    def find_by_host_name(self, host_Name):
+        search_index = self.content().searchIndex
+        vm = search_index.FindByDnsName(datacenter=None, dnsName=host_Name, vmSearch=True)   # note: use host_name since the documentation of this method says "The DNS name for a virtual machine is the one returned from VMware tools, hostName."
+        if vm:
+            return VM(vm)
+
+    def find_by_uuid(self, uuid):
+        search_index = self.content().searchIndex
+        vm = search_index.FindByUuid(datacenter=None, uuid=uuid, vmSearch=True)
+        if vm:
+            return VM(vm)
+
+    def find_by_ip(self, ip_address):
+        search_index = self.content().searchIndex
+        vm = search_index.FindByIp(datacenter=None, ip=ip_address, vmSearch=True)
+        if vm:
+            return VM(vm)
 
     def json_dump(self, obj_type, moid):
         si_stub  = self.service_instance()._stub

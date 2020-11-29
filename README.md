@@ -1,6 +1,6 @@
 # k8-vmware
 
-![Run Python Tests](https://github.com/k8-proxy/k8-vmware/workflows/Run%20Python%20Tests/badge.svg)
+[![Run Python Tests](https://github.com/k8-proxy/k8-vmware/workflows/Run%20Python%20Tests/badge.svg)](https://github.com/k8-proxy/k8-vmware/actions)
 
 
 ## Dev machine install
