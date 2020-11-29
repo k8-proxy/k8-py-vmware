@@ -1,5 +1,6 @@
 pyvmomi
 python-dotenv
+git+https://github.com/owasp-sbot/OSBot-Utils.git
 
 # for development
 pytest

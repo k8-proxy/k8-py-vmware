@@ -81,105 +81,12 @@ class test_Sdk(TestCase):
         assert vm_created_info['Name'] == vm_name
         assert task_delete.info.state == "success"
 
-    # def test_vm_delete_by_name(self):
-    #     print()
-    #     vm_name = "unittest-vm__test_vm_create"
-    #     assert self.sdk.vm_delete__by_name(vm_name) == True
-
-
     # def test_find_iso(self):
     #     vm = self.sdk.find_by_host_name('haproxy-icap')
     #     #pprint(vm.info())
     #     #print(self.sdk.json_dump("VirtualMachine","42"))
     #     #vim.vm.device.VirtualCdrom
     #     print(vm.config().hardware)
-
-    # def test_delete_vm(self):
-    #
-    #     name = "dinis-test-via-api"
-    #     vm = self.sdk.find_by_name(name)
-    #     pprint(vm.info())
-    #
-    #     si = self.sdk.service_instance()
-    #     # task_power_off = vm.vm.PowerOffVM_Task()
-    #     # wait_for_tasks(si, [task_power_off])
-    #
-    #     task_destroy = vm.vm.Destroy_Task()
-    #     wait_for_tasks(si, [task_destroy])
-    #
-    #     vm = self.sdk.find_by_name(name)
-    #     pprint(vm.info())
-    #     #pprint(self.sdk.vms()[16].info())
-
-    # def test_create_vm(self):
-    #
-    #
-    #
-    #     def get_obj(content, vimtype, name):
-    #         obj = None
-    #         container = content.viewManager.CreateContainerView(
-    #             content.rootFolder, vimtype, True)
-    #         for c in container.view:
-    #             if c.name == name:
-    #                 obj = c
-    #                 break
-    #         return obj
-    #
-    #     from pyVmomi import vim, vmodl
-    #     #from add_nic_to_vm import add_nic, get_obj
-    #
-    #
-    #     #pprint(self.sdk.vms()[0].info())
-    #     #return
-    #     """Creates a dummy VirtualMachine with 1 vCpu, 128MB of RAM.
-    #         :param name: String Name for the VirtualMachine
-    #         :param service_instance: ServiceInstance connection
-    #         :param vm_folder: Folder to place the VirtualMachine in
-    #         :param resource_pool: ResourcePool to place the VirtualMachine in
-    #         :param datastore: DataStrore to place the VirtualMachine on
-    #         """
-    #     content = service_instance = self.sdk.content()
-    #
-    #     #content = service_instance.RetrieveContent()
-    #     datacenter = ""
-    #     folder = ""
-    #     resource_pool = ""
-    #
-    #     # print()
-    #     # vm_datacenter = get_obj(content, [vim.Datacenter], "")
-    #     # vm_folder = get_obj(content, [vim.Folder], folder)
-    #     # vm_resource_pool = get_obj(content, [vim.ResourcePool], resource_pool)
-    #     # print(vm_datacenter, vm_folder, vm_resource_pool)
-    #     #
-    #     # vm_folder = self.sdk.datacenter_folder()
-    #     # vm_datacenter = self.sdk.datacenter()
-    #     #
-    #     # print(self.sdk.datacenter())
-    #     # print(self.sdk.datacenter_folder())
-    #
-    #     service_instance = self.sdk.service_instance()
-    #     vm_datacenter    = self.sdk.datacenter()
-    #     vm_folder        = self.sdk.datacenter_folder()
-    #     vm_resource_pool = self.sdk.resource_pool()
-    #
-    #
-    #     datastore = "datastore1"
-    #     vm_name = "dinis-test-via-api"
-    #     datastore_path = '[' + datastore + '] ' + vm_name
-    #
-    #     # bare minimum VM shell, no disks. Feel free to edit
-    #     vmx_file = vim.vm.FileInfo(logDirectory=None,
-    #                                snapshotDirectory=None,
-    #                                suspendDirectory=None,
-    #                                vmPathName=datastore_path)
-    #
-    #     config = vim.vm.ConfigSpec(name=vm_name, memoryMB=128, numCPUs=1,
-    #                                files=vmx_file, guestId='ubuntu64Guest',
-    #                                version='vmx-07')
-    #
-    #     print("Creating VM {}...".format(vm_name))
-    #     task = vm_folder.CreateVM_Task(config=config, pool=vm_resource_pool)
-    #     wait_for_tasks(service_instance, [task])
 
     def test_find_by_host_name(self):
         for vm in self.sdk.vms():
