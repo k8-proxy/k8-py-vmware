@@ -10,7 +10,7 @@ class test_Test_VMs(TestCase):
         self.test_vm = Test_VM()
 
     def test__init__(self):
-        assert self.test_vm.test_vm_name is "unit_tests_vm"
+        assert "unit_tests__temp_vm_" in self.test_vm.vm_name
 
     def test_create__delete(self):
         vm = self.test_vm.create()
