@@ -37,7 +37,7 @@ class test_Datastore(TestCase):
         assert len(folders) > 0
 
     def test_search_files(self):
-        files = self.datastore.files("*.vmx")
+        files = self.datastore.files()
         assert len(files) > 0
 
     def test_search_files_names(self):
