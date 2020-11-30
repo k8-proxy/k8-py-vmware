@@ -17,10 +17,10 @@ class test_Datastore_File(TestCase):
         tmp_file = self.datastore_file.download()
         print(file_contents(tmp_file))
 
-    def test_upload(self):
-        path_file = temp_file(file_contents="This is a local file - " + random_string())
-        result = self.datastore_file.upload(path_file)
-        print(result)
+    # def test_upload(self):
+    #     path_file = temp_file(file_contents="This is a local file - " + random_string())
+    #     result = self.datastore_file.upload(path_file)
+    #     print(result)
 
     # def test_upload_file(self):
     #     ds_folder = ''
