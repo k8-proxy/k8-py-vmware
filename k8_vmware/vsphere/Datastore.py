@@ -16,6 +16,19 @@ class Datastore:
     def datastore(self):
         return self.sdk.get_object(pyVmomi.vim.Datastore, self.name)
 
+    def delete(self, target):
+        item_path = f'[{self.name}]/{target}'.replace('//','/')
+        content = self.sdk.content()
+        datacenter = self.sdk.datacenter()
+        try:
+            task = content.fileManager.DeleteDatastoreFile_Task(item_path, datacenter)
+            Task().wait_for_task(task)
+            if task.info.state == "success":
+                return True
+        except Exception as error:
+            print(f"[Error][delete] {error.msg}")  # todo: add global error handler and use it here
+        return False
+
     def info(self):
         info = self.datastore().info
         vmfs = info.vmfs
@@ -68,6 +81,10 @@ class Datastore:
                          })
         return data
 
+    def file_delete(self, folder_name, file_name):
+        file_path = f"{folder_name}/{file_name}"
+        return self.delete(file_path)
+
     @index_by
     @group_by
     def files(self, match_pattern="*"):
@@ -101,18 +118,7 @@ class Datastore:
         return True
 
     def folder_delete(self, folder_name):
-        folder_path = f'[{self.name}]/{folder_name}'
-        content    = self.sdk.content()
-        datacenter = self.sdk.datacenter()
-        try:
-            task = content.fileManager.DeleteDatastoreFile_Task(folder_path, datacenter)
-            Task().wait_for_task(task)
-            if task.info.state == "success":
-                return True
-        except Exception as error:
-            print(f"[Error][folder_delete] {error.msg}")  #todo: add global error handler and use it here
-        return False
-
+        return self.delete(folder_name)
 
     @index_by
     @group_by

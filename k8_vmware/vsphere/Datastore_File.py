@@ -68,6 +68,9 @@ class Datastore_File:
             print(request.text)
         return True
 
+    def delete(self):
+        return self.datastore.file_delete(self.ds_folder, self.ds_file)
+
     def download(self):
         return self.requests_download_from_url()
 

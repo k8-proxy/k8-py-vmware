@@ -10,7 +10,7 @@ class test_Datastore_File(TestCase):
 
     def setUp(self) -> None:
         ds_folder           = ''
-        ds_file             = 'new-one.txt'
+        ds_file             = f"test_Datastore_File-{random_string()}.txt"
         self.datastore_file = Datastore_File(ds_folder=ds_folder, ds_file=ds_file)
 
     # def test_download(self):
@@ -20,13 +20,14 @@ class test_Datastore_File(TestCase):
     def test_upload__download(self):
         local_file = temp_file(file_contents="This is a local file - " + random_string())   # create local temp file
 
-        self.datastore_file.upload(local_file)                      # file
-        tmp_file = self.datastore_file.download()
+        self.datastore_file.upload(local_file)                                              # upload file to server
+        tmp_file = self.datastore_file.download()                                           # download file from server
 
-        assert file_exists(tmp_file)
-        assert file_contents(local_file) == file_contents(tmp_file)
+        assert file_exists(tmp_file)                                                        # confirm it exists
+        assert file_contents(local_file) == file_contents(tmp_file)                         # confirm content matches the randomly generated temp content
 
-        file_delete(local_file)
+        assert self.datastore_file.delete() is True                                         # delete temp file from data_store
+        file_delete(local_file)                                                             # delete local temp file
 
     # def test_upload_file(self):
     #     ds_folder = ''
