@@ -25,6 +25,8 @@ jobs:
       - name: Run tests with pytest
         run: pytest -v --durations=0
         env:
-          VSPHERE_HOST: ${{ secrets.VSPHERE_HOST }}
+          VM_USERNAME     : ${{ secrets.VM_USERNAME      }}
+          VM_PASSWORD     : ${{ secrets.VM_PASSWORD      }}
+          VSPHERE_HOST    : ${{ secrets.VSPHERE_HOST     }}
           VSPHERE_USERNAME: ${{ secrets.VSPHERE_USERNAME }}
           VSPHERE_PASSWORD: ${{ secrets.VSPHERE_PASSWORD }}
