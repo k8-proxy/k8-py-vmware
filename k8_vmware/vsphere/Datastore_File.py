@@ -46,23 +46,30 @@ class Datastore_File:
         return  "https://" + host + ":443" + resource
 
     def requests_download_from_url(self):
-        tmp_file = temp_file()
-
+        tmp_file    = temp_file()
         cookie      = self.get_request_cookie()
         headers     = self.get_headers()
         params      = self.get_params()
         server_url  = self.get_server_url()
-
-
 
         with open(tmp_file, "wb") as file:
             response = requests.get(server_url, params=params, headers=headers, cookies=cookie, verify=self.verify_cert)
             file.write(response.content)
         return tmp_file
 
+    def requests_upload_to_url(self, local_file):
+        cookie = self.get_request_cookie()
+        headers = self.get_headers()
+        params = self.get_params()
+        server_url = self.get_server_url()
+        with open(local_file, "rb") as file:
+            request = requests.put(server_url, params=params, data=file, headers=headers, cookies=cookie, verify=self.verify_cert)
+            print(request)
+            print(request.text)
+        return True
+
     def download(self):
         return self.requests_download_from_url()
 
-    def upload(self, path_file):
-        remote_file = f"{self.ds_folder}/{self.ds_file}"
-        return self.requests_upload_to_url(path_file, remote_file)
+    def upload(self, local_file):
+        return self.requests_upload_to_url(local_file)

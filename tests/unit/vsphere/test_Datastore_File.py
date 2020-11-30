@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from osbot_utils.utils.Files import file_contents, temp_file
+from osbot_utils.utils.Files import file_contents, temp_file, file_exists, file_delete
 from osbot_utils.utils.Misc import random_string
 
 from k8_vmware.vsphere.Datastore_File import Datastore_File
@@ -13,14 +13,20 @@ class test_Datastore_File(TestCase):
         ds_file             = 'new-one.txt'
         self.datastore_file = Datastore_File(ds_folder=ds_folder, ds_file=ds_file)
 
-    def test_download(self):
-        tmp_file = self.datastore_file.download()
-        print(file_contents(tmp_file))
+    # def test_download(self):
+    #     tmp_file = self.datastore_file.download()
+    #     print(file_contents(tmp_file))
 
-    # def test_upload(self):
-    #     path_file = temp_file(file_contents="This is a local file - " + random_string())
-    #     result = self.datastore_file.upload(path_file)
-    #     print(result)
+    def test_upload__download(self):
+        local_file = temp_file(file_contents="This is a local file - " + random_string())   # create local temp file
+
+        self.datastore_file.upload(local_file)                      # file
+        tmp_file = self.datastore_file.download()
+
+        assert file_exists(tmp_file)
+        assert file_contents(local_file) == file_contents(tmp_file)
+
+        file_delete(local_file)
 
     # def test_upload_file(self):
     #     ds_folder = ''
