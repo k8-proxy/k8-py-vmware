@@ -178,17 +178,3 @@ class Sdk:
         for vm in self.vms():
             names.append(vm.name())
         return names
-
-        # ## alternative way to get the names (via CreateContainerView)
-        # ## this does seem to make a couple less REST calls than the current view
-        # def names_v2(self):
-        #     # from pyVmomi import vim, vmodl
-        #     from pyVmomi import pyVmomi
-        #     content = Sdk().content()
-        #
-        #     objView = content.viewManager.CreateContainerView(content.rootFolder,
-        #                                                       [pyVmomi.vim.VirtualMachine],
-        #                                                       True)
-        #     vmList = objView.view
-        #     for vm in vmList:
-        #         print(vm.name)            # will make REST call here

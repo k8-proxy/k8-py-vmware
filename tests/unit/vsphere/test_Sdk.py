@@ -85,8 +85,7 @@ class test_Sdk(TestCase_VM):
 
     def test_names(self):
         names = self.sdk.vms_names()
-        assert len(names) > 0
-        #print(names)
+        assert len(names) > 0        
 
     def test_service_instance(self):
         service_instance = self.sdk.service_instance()

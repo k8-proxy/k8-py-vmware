@@ -11,3 +11,9 @@ class Config():
                     "username": environ.get('VSPHERE_USERNAME'),
                     "password": environ.get('VSPHERE_PASSWORD')
                 }
+
+    def vm_account(self):
+        return  {
+                    "username": environ.get('VM_USERNAME'),
+                    "password": environ.get('VM_PASSWORD')
+                }
