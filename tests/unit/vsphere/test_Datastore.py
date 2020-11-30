@@ -62,7 +62,8 @@ class test_Datastore(TestCase):
     ## misc tests
 
     def test_delete_temp_folders_from_datastore(self):
-        temp_folder_pattters = ["random_name_*", "test____enter__*", "unit_tests__*", "tests__unit*"]
+        temp_folder_pattters = ["random_name_*", "test____enter__*", "unit_tests__*",
+                                "tests__unit*", "unittest-test*"]
         print()
         for temp_folder_pattern in temp_folder_pattters:
             temp_folders = self.datastore.folders_names(temp_folder_pattern)

@@ -1,5 +1,6 @@
 import pyVmomi
 
+from k8_vmware.vsphere.Datastore import Datastore
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.Task import Task
 from k8_vmware.vsphere.VM import VM
@@ -16,8 +17,12 @@ class VM_Task:
         if self.vm:
             if self.vm.powered_on():
                 self.power_off()
-            task_destroy = self.vm.vm.Destroy_Task()
-            return Task().wait_for_task(task_destroy)
+            vm_name = self.vm.name()                    # capture the vm_name
+            task_destroy = self.vm.vm.Destroy_Task()    # delete the vm
+            Task().wait_for_task(task_destroy)          # wait until deletion is done
+            Datastore().folder_delete(vm_name)          # delete folder created by VM
+            return task_destroy
+
 
     # def delete__by_name(self, vm_name : str):
     #     vm = self.sdk.find_by_name(vm_name)
