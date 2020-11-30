@@ -90,6 +90,24 @@ class Sdk:
 
         return Sdk.cached_service_instance
 
+    # todo: improve this by: allowed to set how many to receive and allowing for further searches than the 'recent tasks'
+    def tasks_recent(self):
+        content = self.content()
+        task_manager = content.taskManager
+        tasks = []
+        for task in task_manager.recentTask:
+            info = task.info
+            task_data = {
+                "DescriptionId" : info.descriptionId,
+                "Entity"        : info.entity       ,
+                "Key"           : info.key          ,
+                "EventChainId"  : info.eventChainId ,
+                "State"         : info.state
+            }
+            tasks.append(task_data)
+            #break
+        return tasks
+
     def datacenter(self):
         for child in self.content().rootFolder.childEntity:
             if child._wsdlName == 'Datacenter':

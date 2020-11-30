@@ -5,8 +5,7 @@ from unittest import TestCase
 from k8_vmware.helpers.TestCase_VM import TestCase_VM
 from k8_vmware.vsphere.Sdk import Sdk
 
-#from os import environ                     # use this to see SOAP calls made to the /sdk endpoint
-#environ['show_soap_calls'] = "True"        # good to debug performance issues
+
 from pyVmomi import pyVmomi
 
 class test_Sdk(TestCase_VM):
@@ -88,3 +87,13 @@ class test_Sdk(TestCase_VM):
         json_data = json.loads(json_dump)
         assert json_data['_vimid'  ] == moid
         assert json_data['_vimtype'] == "vim.VirtualMachine"
+
+    def test_tasks(self):
+        self.sdk.find_by_ip('aaaaaa')
+        recent_tasks    = self.sdk.tasks_recent()
+        most_recent_one = recent_tasks.pop()
+
+        assert most_recent_one['DescriptionId'] == 'SearchIndex.findByIp'
+        assert most_recent_one['Key'          ] == f"haTask--vim.SearchIndex.findByIp-{most_recent_one['EventChainId']}"
+        assert most_recent_one['State'        ] == 'success'
+        assert most_recent_one['Entity'       ] is None

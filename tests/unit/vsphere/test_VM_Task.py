@@ -4,6 +4,7 @@ import pyVmomi
 
 from k8_vmware.helpers.TestCase_VM import TestCase_VM
 from k8_vmware.vsphere.Sdk import Sdk
+from k8_vmware.vsphere.VM_Create import VM_Create
 from k8_vmware.vsphere.VM_Task import VM_Task
 
 
@@ -32,3 +33,8 @@ class test_VM_Task(TestCase_VM):
         assert task_power_off.info.state         == "success"
         assert task_power_off.info.name          == pyVmomi.vim.VirtualMachine.PowerOff
         assert task_power_off.info.descriptionId == 'VirtualMachine.powerOff'
+
+    def test_that_powered_on_vms_can_be_deleted(self):
+        test_vm = VM_Create().create()
+        test_vm.task().power_on()
+        test_vm.task().delete()

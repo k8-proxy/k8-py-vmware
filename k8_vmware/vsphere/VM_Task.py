@@ -15,8 +15,7 @@ class VM_Task:
     def delete(self):
         if self.vm:
             if self.vm.powered_on():
-                # todo: add power off task
-                pass
+                self.power_off()
             task_destroy = self.vm.vm.Destroy_Task()
             return Task().wait_for_task(task_destroy)
 
