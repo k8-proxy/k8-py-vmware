@@ -41,17 +41,20 @@ class Sdk:
     def content(self):
         return self.service_instance().RetrieveContent()
 
+    def file_info(self, vm_path_name, log_directory=None, snapshot_directory=None, suspend_directory=None):
+        return pyVmomi.vim.vm.FileInfo(logDirectory      = log_directory    ,
+                                       snapshotDirectory = snapshot_directory,
+                                       suspendDirectory  = suspend_directory ,
+                                       vmPathName        = vm_path_name      )
+
     def find_by_host_name(self, host_name):
         search_index = self.content().searchIndex
         vm = search_index.FindByDnsName(datacenter=None, dnsName=host_name, vmSearch=True)   # note: use host_name since the documentation of this method says "The DNS name for a virtual machine is the one returned from VMware tools, hostName."
         if vm:
             return VM(vm)
 
-    # todo: refactor to use method that doesn't require iterating through all vms to find one that matches the name
     def find_by_name(self, name):
-        for vm in self.vms():
-            if vm.name() == name:
-                return vm
+        return self.get_object_virtual_machine(name)
 
     def find_by_uuid(self, uuid):
         search_index = self.content().searchIndex
@@ -138,6 +141,24 @@ class Sdk:
         vm = self.get_object(pyVmomi.vim.VirtualMachine, name)
         if vm:
             return VM(vm)
+
+    def get_objects(self, vim_type=None):
+        if vim_type:
+            type_names = [vim_type]
+        else:
+            type_names = []
+        content = self.content()
+        container = content.viewManager.CreateContainerView(content.rootFolder, type_names , True)
+        return container.view
+
+    def get_objects_Compute_Resources(self): return self.get_objects(pyVmomi.vim.ComputeResource)
+    def get_objects_Datacenters      (self): return self.get_objects(pyVmomi.vim.Datacenter     )
+    def get_objects_Datastore        (self): return self.get_objects(pyVmomi.vim.Datastore      )
+    def get_objects_Hosts            (self): return self.get_objects(pyVmomi.vim.HostSystem     )
+    def get_objects_Networks         (self): return self.get_objects(pyVmomi.vim.Network        )
+    def get_objects_ResourcePools    (self): return self.get_objects(pyVmomi.vim.ResourcePool   )
+    def get_objects_StoragePods      (self): return self.get_objects(pyVmomi.vim.StoragePod     )
+    def get_objects_Virtual_Machines (self): return self.get_objects(pyVmomi.vim.VirtualMachine )
 
     def resource_pool(self):
         hosts =  self.datacenter().hostFolder.childEntity

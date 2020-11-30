@@ -5,6 +5,17 @@ class VM:
     def config(self):
         return self.summary().config
 
+    def devices(self):
+        return self.vm.config.hardware.device
+
+    def devices_indexed_by_label(self):
+        devices = {}
+        for device in self.devices():
+            key = device.deviceInfo.label
+            value = device
+            devices[key] = value
+        return devices
+
     def guest(self):
         return self.summary().guest
 

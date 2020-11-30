@@ -2,6 +2,7 @@ import json
 from pprint import pprint
 from unittest import TestCase
 
+from k8_vmware.helpers.Debug import Debug
 from k8_vmware.helpers.TestCase_VM import TestCase_VM
 from k8_vmware.vsphere.Sdk import Sdk
 
@@ -22,6 +23,11 @@ class test_Sdk(TestCase_VM):
         assert content.licenseProductName    == "VMware ESX Server"
         assert content.licenseProductVersion == "6.0"
 
+    def test_file_info(self):
+        datastore_path = 'an data store'
+        vmx_file = self.sdk.file_info(datastore_path)
+        assert vmx_file.vmPathName == datastore_path
+
     # def test_find_iso(self):
     #     vm = self.sdk.find_by_host_name('haproxy-icap')
     #     #pprint(vm.info())
@@ -36,6 +42,11 @@ class test_Sdk(TestCase_VM):
                 assert self.sdk.find_by_host_name(host_name).host_name() == host_name
                 return
         print("Warning test ESX server had no VMs with host_names (dnsNames) setup")
+
+    def test_find_by_name(self):
+        assert self.sdk.find_by_name(self.vm_name).name() == self.vm_name
+        assert self.sdk.find_by_name("AAA_BBB_CCC") is None
+
 
     def test_find_by_ip(self):
         for vm in self.sdk.vms():
@@ -58,6 +69,11 @@ class test_Sdk(TestCase_VM):
         name = self.vm.name()
         vm   = self.sdk.get_object_virtual_machine(name)
         assert vm.name() == name
+
+    def test_get_objects(self):
+        objects = self.sdk.get_objects()
+        print
+        pprint(objects)
 
     def test_folders(self):
         folders = self.sdk.folders()
@@ -96,4 +112,4 @@ class test_Sdk(TestCase_VM):
         assert most_recent_one['DescriptionId'] == 'SearchIndex.findByIp'
         assert most_recent_one['Key'          ] == f"haTask--vim.SearchIndex.findByIp-{most_recent_one['EventChainId']}"
         assert most_recent_one['State'        ] == 'success'
-        assert most_recent_one['Entity'       ] is None
+        assert most_recent_one['Entity'       ] == 'None'

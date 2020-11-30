@@ -1,4 +1,7 @@
+from pprint import pprint
 from unittest import TestCase
+
+import pyVmomi
 
 from k8_vmware.vsphere.VM_Create import VM_Create
 

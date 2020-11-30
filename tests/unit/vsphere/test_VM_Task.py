@@ -36,13 +36,13 @@ class test_VM_Task(TestCase_VM):
 
     def test_that_powered_on_vms_can_be_deleted(self):
         test_vm = VM_Create().create()
-        vm_moid = test_vm.moid()
         test_vm.task().power_on()
         test_vm.task().delete()
 
         ### todo: re-add one self.sdk.tasks_recent() is faster (at the moment it can add 3 secs to the test execution
         ### test below shows the power of recent_tasks, but at the moment that method is highly inefficient
         ### so skipping this
+        # vm_moid = test_vm.moid()
         # recent_tasks = self.sdk.tasks_recent()
         # last_task      = recent_tasks.pop()
         # event_chain_id = last_task['EventChainId']
