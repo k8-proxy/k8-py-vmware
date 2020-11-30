@@ -8,8 +8,9 @@ from k8_vmware.vsphere.Task import Task
 
 class Datastore:
 
-    def __init__(self, name="datastore1"):
-        self.name = name
+    def __init__(self, name="datastore1", datacenter='ha-datacenter'):
+        self.name       = name
+        self.datacenter = datacenter
         self.sdk  = Sdk()
 
     def datastore(self):

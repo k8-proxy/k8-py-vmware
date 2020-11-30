@@ -80,7 +80,7 @@ class Sdk:
         host        = server['host']
         user        = server['username']
         pwd         = server['password']
-        ssl_context = self.unverified_ssl_context()
+        ssl_context = self.unverified_ssl_context()             # todo: make this a option that is configurable (default should not be this insecure mode)
         try:
             if (Sdk.cached_service_instance is None):
                 Sdk.cached_service_instance = connect.SmartConnect(host=host, user=user, pwd=pwd, sslContext=ssl_context)
