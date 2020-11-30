@@ -2,15 +2,19 @@ from unittest import TestCase
 
 import pytest
 
+from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Process import VM_Process
 
 
 class test_VM_Process(TestCase):
     def setUp(self) -> None:
+        self.sdk        = Sdk()
         self.vm_name    = 'dinis-test-via-ovf'
-        self.vm_process = VM_Process(self.vm_name)
-        if self.vm_process.find_vm() is None:
+        self.vm         = self.sdk.find_by_name(self.vm_name)
+        if self.vm is None:
             pytest.skip(f"target server did not have vm {self.vm_name}")
+        self.vm_process = VM_Process(vm = self.vm)
+
 
 
     def test_start_process_return_stdout(self):

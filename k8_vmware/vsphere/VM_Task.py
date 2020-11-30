@@ -19,9 +19,9 @@ class VM_Task:
             task_destroy = self.vm.vm.Destroy_Task()
             return Task().wait_for_task(task_destroy)
 
-    def delete__by_name(self, vm_name : str):
-        vm = self.sdk.find_by_name(vm_name)
-        return self.delete(vm)
+    # def delete__by_name(self, vm_name : str):
+    #     vm = self.sdk.find_by_name(vm_name)
+    #     return self.delete(vm)
 
     def power_on(self):
         task = self.vm.vm.PowerOnVM_Task()              # todo refactor into task API
