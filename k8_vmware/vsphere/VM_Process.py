@@ -23,9 +23,12 @@ class VM_Process:
     def ls(self, path=""):
         return self.exec('/bin/ls', path)
 
+    def find_vm(self):
+        return self.sdk.find_by_name(self.vm_name)
+
     def start_process_return_stdout(self, program_path, arguments):
         content = self.sdk.content()
-        vm      = self.sdk.find_by_name(self.vm_name)
+        vm      = self.find_vm()
         # assert self.vm.guest().toolsStatus == 'toolsOk'
 
         file_stdout   = f"/tmp/_vm_exec_{random_string()}"
