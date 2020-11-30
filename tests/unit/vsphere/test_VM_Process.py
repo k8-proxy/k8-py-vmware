@@ -13,6 +13,10 @@ class test_VM_Process(TestCase):
         self.vm         = self.sdk.find_by_name(self.vm_name)
         if self.vm is None:
             pytest.skip(f"target server did not have vm {self.vm_name}")
+        else:
+            if self.vm.powered_off():
+                pytest.skip(f"target server exists but it not Powered On {self.vm_name}")
+
         self.vm_process = VM_Process(vm = self.vm)
 
 

@@ -30,7 +30,7 @@ class test_Datastore(TestCase):
     def test_folders(self):
         folders = self.datastore.folders()
         assert len(folders) > 0
-        assert set(folders[0]) == {'Owner', 'Modified', 'Path', 'Size'}
+        assert set(folders[0]) == {'Owner', 'Modified', 'FolderName', 'Size'}
 
     def test_folders_names(self):
         folders = self.datastore.folders_names()
