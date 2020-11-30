@@ -91,18 +91,19 @@ class Sdk:
         return Sdk.cached_service_instance
 
     # todo: improve this by: allowed to set how many to receive and allowing for further searches than the 'recent tasks'
+    #       at the moment this can take 3 to 5 seconds to execute (since every all items are being fetched)
     def tasks_recent(self):
         content = self.content()
         task_manager = content.taskManager
         tasks = []
-        for task in task_manager.recentTask:
+        for task in task_manager.recentTask:                # will make a REST call per itme
             info = task.info
             task_data = {
-                "DescriptionId" : info.descriptionId,
-                "Entity"        : info.entity       ,
-                "Key"           : info.key          ,
-                "EventChainId"  : info.eventChainId ,
-                "State"         : info.state
+                "DescriptionId" : str(info.descriptionId),
+                "Entity"        : str(info.entity       ).replace("'",""),
+                "Key"           : str(info.key          ),
+                "EventChainId"  : str(info.eventChainId ),
+                "State"         : str(info.state        )
             }
             tasks.append(task_data)
             #break
