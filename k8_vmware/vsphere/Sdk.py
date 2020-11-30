@@ -154,6 +154,7 @@ class Sdk:
     def get_objects_Compute_Resources(self): return self.get_objects(pyVmomi.vim.ComputeResource)
     def get_objects_Datacenters      (self): return self.get_objects(pyVmomi.vim.Datacenter     )
     def get_objects_Datastore        (self): return self.get_objects(pyVmomi.vim.Datastore      )
+    def get_objects_Folders          (self): return self.get_objects(pyVmomi.vim.Folder         )
     def get_objects_Hosts            (self): return self.get_objects(pyVmomi.vim.HostSystem     )
     def get_objects_Networks         (self): return self.get_objects(pyVmomi.vim.Network        )
     def get_objects_ResourcePools    (self): return self.get_objects(pyVmomi.vim.ResourcePool   )

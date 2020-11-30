@@ -89,18 +89,43 @@ class Datastore:
 
         return sorted(paths)
 
+    # note the content.fileManager.MakeDirectory doesn't return a Task so need to keep an eye on this for side effect
+    # it might be that these legacy methods do the folder creation in a sync way (vs a task)
+    def folder_create(self, folder_name):
+        folder_path = f'[{self.name}]/{folder_name}'
+        content = self.sdk.content()
+        datacenter = self.sdk.datacenter()
+        content.fileManager.MakeDirectory(name=folder_path, datacenter=datacenter, createParentDirectories=True) # this method doesn't return a task
+        #Task().wait_for_task(task)
+        return True
+
+    def folder_delete(self, folder_name):
+        folder_path = f'[{self.name}]/{folder_name}'
+        content    = self.sdk.content()
+        datacenter = self.sdk.datacenter()
+        try:
+            task = content.fileManager.DeleteDatastoreFile_Task(folder_path, datacenter)
+            Task().wait_for_task(task)
+            if task.info.state == "success":
+                return True
+        except Exception as error:
+            print(f"[Error][folder_delete] {error.msg}")  #todo: add global error handler and use it here
+        return False
+
+
     @index_by
     @group_by
-    def folders(self):
+    def folders(self, match_pattern="*"):
         search_function = self.datastore().browser.SearchSubFolders
+
         query_folder    = pyVmomi.vim.host.DatastoreBrowser.FolderQuery()
         search_spec     = pyVmomi.vim.host.DatastoreBrowser.SearchSpec(query=[query_folder])
-
+        search_spec.matchPattern = match_pattern
         search_results = self.execute_search_task(search_function, search_spec)
         return self.get_search_data__for_folders(search_results[0].file)
 
-    def folders_names(self):
-        return sorted(list(set(self.folders(index_by="FolderName"))))
+    def folders_names(self, match_pattern="*"):
+        return sorted(list(set(self.folders(match_pattern, index_by="FolderName"))))
 
     def sizeof_fmt(self, num):
         """
