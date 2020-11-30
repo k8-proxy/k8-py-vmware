@@ -65,6 +65,10 @@ class test_Sdk(TestCase_VM):
         vm   = self.sdk.get_object(pyVmomi.vim.VirtualMachine,name)
         assert vm.name == name
 
+    def test_get_objects_Datastore(self):
+        datastores = self.sdk.get_objects_Datastore()
+        assert len(datastores) >0
+
     def test_get_object_virtual_machine(self):
         name = self.vm.name()
         vm   = self.sdk.get_object_virtual_machine(name)
@@ -72,8 +76,7 @@ class test_Sdk(TestCase_VM):
 
     def test_get_objects(self):
         objects = self.sdk.get_objects()
-        print
-        pprint(objects)
+        assert len(objects) > 0
 
     def test_folders(self):
         folders = self.sdk.folders()

@@ -1,3 +1,5 @@
+import requests
+
 from k8_vmware.Config import Config
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Process import VM_Process
@@ -23,7 +25,15 @@ class VM_Server_225_145:
         print(vm_process.exec('/bin/ip', 'a'))
         print(vm_process.exec('/bin/ip', 'route show'))
 
+    def minio_test_get_request(self):
+        resp = requests.get('http://91.109.26.22')
+        return resp.text
 
-        #print(vm_process.exec('/bin/docker', ''))
+    def minio_test_vm_power_off(self):
+        vm = self.sdk.find_by_name(self.vm_name__minio_test)
+        vm.task().power_off()
+        return vm.info()
+
+
 
 

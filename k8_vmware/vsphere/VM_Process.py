@@ -17,13 +17,11 @@ class VM_Process:
         self.ip_server      = self.server_details['host']
 
 
-    def exec(self, program_path, arguments):
+
+    def exec(self, program_path, arguments=""):
         return self.start_process_return_stdout(program_path, arguments)
 
-    def ls(self, path=""):
-        return self.exec('/bin/ls', path)
-
-    def start_process_return_stdout(self, program_path, arguments):
+    def start_process_return_stdout(self, program_path, arguments=""):
         content = self.sdk.content()
         # assert self.vm.guest().toolsStatus == 'toolsOk'
 
@@ -37,3 +35,8 @@ class VM_Process:
         file_url      = file_transfer.url.replace("*:443", self.ip_server)
         resp          = requests.get(file_url, verify=False)
         return resp.text
+
+    # helper commands
+
+    def curl(self, target='-h'): return self.exec('/usr/bin/curl', target)
+    def ls(self  , path=""    ): return self.exec('/bin/ls', path)
