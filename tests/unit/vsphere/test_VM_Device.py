@@ -9,7 +9,16 @@ class test_VM_Device(TestCase_VM):
         self.vm_name = test_VM_Device.vm_name
         self.vm_device = VM_Device(vm=self.vm)
 
-    def test_disk_add_to_vm(self):
+    def test_disk_ide_add_to_vm(self):
+        assert len(self.vm_device.vm.devices()) == 9
+        self.vm_device.disk_ide_add_to_vm(100)
+        self.vm_device.disk_ide_add_to_vm(20)
+        disks = self.vm_device.vm.devices_Disks()
+        self.vm_device.remove_device(disks[0])  # remove disk 1 from vm
+        self.vm_device.remove_device(disks[1])  # remove disk 2 from vm
+        assert len(self.vm_device.vm.devices()) == 9        # for IDE disks we don't need to delete them (they will be deleted when the VM is deleted
+
+    def test_disk_scsi_add_to_vm(self):
         disk_1_size = 10
         disk_2_size = 20
         assert self.vm_device.vm.controller_scsi() is None
@@ -17,8 +26,8 @@ class test_VM_Device(TestCase_VM):
         assert len(self.vm_device.vm.devices_Disks()) == 0
 
         self.vm_device.scsi_controller__add_to_vm()                 # add scsi controller
-        self.vm_device.disk_add_to_vm(disk_1_size)
-        self.vm_device.disk_add_to_vm(disk_2_size)
+        self.vm_device.disk_scsi_add_to_vm(disk_1_size)
+        self.vm_device.disk_scsi_add_to_vm(disk_2_size)
 
         disks= self.vm_device.vm.devices_Disks()
 

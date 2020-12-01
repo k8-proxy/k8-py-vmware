@@ -13,6 +13,11 @@ class VM:
         if len(controllers) > 0:
             return controllers[0]       # default to returning the first one
 
+    def controller_ide(self):
+        controllers = self.devices_IDE_Controllers()
+        if len(controllers) > 0:
+            return controllers[0]       # default to returning the first one
+
     def devices(self):
         return self.vm.config.hardware.device
 

@@ -49,10 +49,9 @@ class test_VM_Create(TestCase):
         scsi_ctr = self.vm_create.add_device__scsi()
         self.vm_create.add_device__disk(disk_size, vm_name, scsi_ctr)
         vm = self.vm_create.create()
-        #vm.task().power_on()
         vm.task().delete()
 
-        #self.delete_test_network(network_name)
+        self.delete_test_network(network_name)
 
 
     # def test_cdrom(self):

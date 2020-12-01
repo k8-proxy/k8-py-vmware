@@ -26,13 +26,16 @@ class VM_Device:
             raise Exception("[disk_get_scsi_controller] no SCSI controllers available")
         return controllers.pop()
 
-    def disk_add_to_vm(self, disk_size, disk_type=None):
-        spec            = pyVmomi.vim.vm.ConfigSpec()
-        unit_number     = self.disk_get_available_unit_number()
-        scsi_controller = self.vm.controller_scsi()
-        if scsi_controller is None:
-            raise Exception("[disk_add_to_vm] no SCSI controller available")
+    def disk_ide_add_to_vm(self, disk_size, disk_type="thin"):      # for what disk_type="thin" means see https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.storage.doc/GUID-8204A8D7-25B6-4DE2-A227-408C158A31DE.html
+        ide_controller = self.vm.controller_ide()
+        return self.disk_add_to_vm(disk_size, ide_controller, disk_type)
 
+    def disk_scsi_add_to_vm(self, disk_size, disk_type="thin"):
+        scsi_controller = self.vm.controller_scsi()
+        return self.disk_add_to_vm(disk_size, scsi_controller, disk_type)
+
+    def disk_add_to_vm(self, disk_size, controller, disk_type=None):
+        unit_number                         = self.disk_get_available_unit_number()
         new_disk_kb                         = int(disk_size) * 1024 * 1024
         disk_spec                           = pyVmomi.vim.vm.device.VirtualDeviceSpec()
         disk_spec.fileOperation             = "create"
@@ -42,7 +45,7 @@ class VM_Device:
         disk_spec.device.backing.diskMode   = 'persistent'
         disk_spec.device.unitNumber         = unit_number
         disk_spec.device.capacityInKB       = new_disk_kb
-        disk_spec.device.controllerKey      = scsi_controller.key
+        disk_spec.device.controllerKey      = controller.key
         if disk_type == 'thin':
             disk_spec.device.backing.thinProvisioned = True
         return self.reconfig_vm(disk_spec)
