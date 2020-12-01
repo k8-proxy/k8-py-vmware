@@ -8,22 +8,29 @@ class VM:
     def config(self):
         return self.summary().config
 
+    def controller_scsi(self):
+        controllers = self.devices_SCSI_Controllers()
+        if len(controllers) > 0:
+            return controllers[0]       # default to returning the first one
+
     def devices(self):
         return self.vm.config.hardware.device
 
-    def devices_Virtual_IDE_Controller      (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualIDEController     )
-    def devices_Virtual_Cdrom               (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualCdrom             )
-    def devices_Virtual_AHCI_Controller     (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualAHCIController    )
-    def devices_Virtual_PCNet_32            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualPCNet32           )
-    def devices_Virtual_Vmxnet_2            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualVmxnet2           )
-    def devices_Virtual_Vmxnet_3            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualVmxnet3           )
-    def devices_Virtual_E1000               (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualE1000             )
-    def devices_Virtual_E1000e              (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualE1000e            )
-    def devices_Virtual_Sriov_EthernetCard  (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualSriovEthernetCard )
+    def devices_IDE_Controllers      (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualIDEController     )
+    def devices_Cdroms               (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualCdrom             )
+    def devices_Disks                (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualDisk              )
+    def devices_AHCI_Controllers     (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualAHCIController    )
+    def devices_PCNet_32s            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualPCNet32           )
+    def devices_Vmxnet_2s            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualVmxnet2           )
+    def devices_Vmxnet_3s            (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualVmxnet3           )
+    def devices_E1000s               (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualE1000             )
+    def devices_E1000es              (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualE1000e            )
+    def devices_SCSI_Controllers     (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualSCSIController    )
+    def devices_Sriov_EthernetCards  (self): return self.devices_of_type(pyVmomi.vim.vm.device.VirtualSriovEthernetCard )
 
     def devices_of_type(self, type):
         devices = []
-        for device in self.hardware().device:
+        for device in self.devices():
             if isinstance(device, type):
                 devices.append(device)
         return devices

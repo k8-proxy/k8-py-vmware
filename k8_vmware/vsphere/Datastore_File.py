@@ -77,6 +77,7 @@ class Datastore_File:
     def upload(self, local_file):
         return self.requests_upload_to_url(local_file)
 
+    # see this PR for a code patch on large file uploads https://github.com/vmware/pyvmomi-community-samples/pull/611/files
 
     # from https://github.com/vmware/pyvmomi-community-samples/blob/83c8bc362d3c3eaec665228618b62a958d0752a7/samples/upload_file_to_datastore.py#L124
     # DC: see it the code below helps with large downloads

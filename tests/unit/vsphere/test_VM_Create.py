@@ -65,7 +65,7 @@ class test_VM_Create(TestCase):
     #     #result = self.vm_create.get_vm_cdrom_devices()
     #     print()
     #
-    #     ide_devices = vm.devices_Virtual_IDE_Controller()
+    #     ide_devices = vm.devices_Virtual_IDE_Controllers()
     #     ide_device = ide_devices[0]             # pick the first one
     #     assert len(ide_device.device) < 4       # make sure there is space to add CDRom
     #
@@ -81,6 +81,6 @@ class test_VM_Create(TestCase):
     #     self.change_detected = True
     #     self.configspec.deviceChange.append(cdrom_spec)
     #
-    #     cd_rom_devices = vm.devices_Virtual_Cdrom()
+    #     cd_rom_devices = vm.devices_Virtual_Cdroms()
     #     pprint(cd_rom_devices)
 
