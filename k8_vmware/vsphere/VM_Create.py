@@ -9,31 +9,14 @@ from k8_vmware.vsphere.VM import VM
 
 
 class VM_Create:
-    def __init__(self, vm_name=None, data_store=None, guest_id=None):
+    def __init__(self, vm_name=None, memory=1024, data_store=None, guest_id=None):
         self.vm_name    : str  = vm_name    or f"random_name_{random_string()}"
+        self.memory     : int  = memory
         self.data_store : str  = data_store or 'datastore1'
         self.guest_id   : str  = guest_id   or 'ubuntu64Guest'
         self.sdk        : Sdk  = Sdk()
         self.vm         : VM   = None                                          # will have the VM object after creation
         self.devices    : list = []
-
-    # def add_device_cdrom(self, ctl_device, cdrom_type, iso_path=None, unit_number=0):
-    #     cdrom_spec                      = pyVmomi.vim.vm.device.VirtualDeviceSpec()
-    #     cdrom_spec.operation            = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
-    #     cdrom_spec.device               = pyVmomi.vim.vm.device.VirtualCdrom()
-    #     cdrom_spec.device.controllerKey = ctl_device.key
-    #     if isinstance  (ctl_device, pyVmomi.vim.vm.device.VirtualIDEController ): cdrom_spec.device.key = -randint(3000, 3999)
-    #     elif isinstance(ctl_device, pyVmomi.vim.vm.device.VirtualAHCIController): cdrom_spec.device.key = -randint(16000, 16999)
-    #     cdrom_spec.device.unitNumber = unit_number
-    #     cdrom_spec.device.connectable = pyVmomi.vim.vm.device.VirtualDevice.ConnectInfo()
-    #     cdrom_spec.device.connectable.allowGuestControl = True
-    #     cdrom_spec.device.connectable.startConnected = (cdrom_type != "none")
-    #     if cdrom_type in ["none", "client"]:
-    #         cdrom_spec.device.backing = pyVmomi.vim.vm.device.VirtualCdrom.RemotePassthroughBackingInfo()
-    #     elif cdrom_type == "iso":
-    #         cdrom_spec.device.backing = pyVmomi.vim.vm.device.VirtualCdrom.IsoBackingInfo(fileName=iso_path)
-    #         cdrom_spec.device.connectable.connected = True
-    #     return cdrom_spec
 
     def add_device__scsi(self):
         scsi_ctr                                = pyVmomi.vim.vm.device.VirtualDeviceSpec()
@@ -84,7 +67,6 @@ class VM_Create:
 
 
 
-
     def create(self):
         folder        = self.sdk.datacenter_folder()
         resource_pool = self.sdk.resource_pool()
@@ -94,7 +76,7 @@ class VM_Create:
         vmx_file = self.sdk.file_info(vm_path_name=datastore_path)
         # todo :refactor these values below
         config = pyVmomi.vim.vm.ConfigSpec(name         = self.vm_name  ,
-                                           memoryMB     = 128           ,
+                                           memoryMB     = self.memory   ,
                                            numCPUs      = 1             ,
                                            files        = vmx_file      ,
                                            guestId      = self.guest_id ,

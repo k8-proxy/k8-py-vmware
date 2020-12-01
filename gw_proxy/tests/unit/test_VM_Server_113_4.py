@@ -23,6 +23,15 @@ class test_VM_Server_113_4(TestCase):
         self.vm_server.setup_network__check()
 
 
+
+    # Ubuntu VM tests
+
+    def test_create_ubuntu_vm(self):
+        self.vm_server.create_ubuntu_vm()
+
+    def test_ubuntu_vm_run_commands(self):
+        self.vm_server.ubuntu_vm_run_commands()
+
     # misc vm tests
 
     def test_minio_test_setup_network(self):

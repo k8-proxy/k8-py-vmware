@@ -1,3 +1,5 @@
+from os import environ
+
 import pyVmomi
 import requests
 from osbot_utils.utils.Misc import random_string
@@ -20,6 +22,11 @@ class VM_Process:
 
     def exec(self, program_path, arguments=""):
         return self.start_process_return_stdout(program_path, arguments)
+
+    def set_vm_account_from_env(self, env_prefix):
+        self.vm_account['username'] = environ.get(f'{env_prefix}_USERNAME')
+        self.vm_account['password'] = environ.get(f'{env_prefix}_PASSWORD')
+        return self
 
     def start_process_return_stdout(self, program_path, arguments=""):
         content = self.sdk.content()

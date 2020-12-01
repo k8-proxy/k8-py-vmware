@@ -13,6 +13,11 @@ class Network:
         assert len(hosts) == 1                  # throw exception if there is more than one host
         return hosts.pop()
 
+    def network(self, name):
+        for network in self.networks():
+            if network.name == name:
+                return network
+
     def networks(self):
         return self.sdk.get_objects_Networks()
 
