@@ -18,6 +18,12 @@ class VM:
         if len(controllers) > 0:
             return controllers[0]       # default to returning the first one
 
+    def controller_ide_free_slot(self):
+        controllers = self.devices_IDE_Controllers()
+        for controller in controllers:
+            if len(controller.device) < 2:
+                return controller
+
     def devices(self):
         return self.vm.config.hardware.device
 

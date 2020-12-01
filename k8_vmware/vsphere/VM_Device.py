@@ -9,6 +9,31 @@ class VM_Device:
         self.sdk            = Sdk()
         self.vm             = vm
 
+    def cdrom_iso_add_to_vm(self, iso_path):
+        backing    = pyVmomi.vim.vm.device.VirtualCdrom.IsoBackingInfo(fileName=iso_path)
+        return self.cdrom_add_to_vm(backing=backing)
+
+    def cdrom_add_to_vm(self, backing=None, controller=None):
+        if controller is None:
+            controller = self.vm.controller_ide_free_slot()
+        if backing == None:
+            backing                    = pyVmomi.vim.vm.device.VirtualCdrom.RemotePassthroughBackingInfo()
+        connectable                    = pyVmomi.vim.vm.device.VirtualDevice.ConnectInfo()
+        connectable.allowGuestControl  = True
+        connectable.startConnected     = True
+
+        cdrom                          = pyVmomi.vim.vm.device.VirtualCdrom()
+        cdrom.controllerKey            = controller.key
+        cdrom.key                      = -1
+        cdrom.connectable              = connectable
+        cdrom.backing                  = backing
+
+        deviceSpec                     = pyVmomi.vim.vm.device.VirtualDeviceSpec()
+        deviceSpec.operation           = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
+        deviceSpec.device              = cdrom
+
+        return self.reconfig_vm(deviceSpec)
+
     def disk_get_available_unit_number(self):
         unit_number = 0
         for dev in  self.vm.devices():
@@ -27,7 +52,7 @@ class VM_Device:
         return controllers.pop()
 
     def disk_ide_add_to_vm(self, disk_size, disk_type="thin"):      # for what disk_type="thin" means see https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.storage.doc/GUID-8204A8D7-25B6-4DE2-A227-408C158A31DE.html
-        ide_controller = self.vm.controller_ide()
+        ide_controller = self.vm.controller_ide_free_slot()
         return self.disk_add_to_vm(disk_size, ide_controller, disk_type)
 
     def disk_scsi_add_to_vm(self, disk_size, disk_type="thin"):

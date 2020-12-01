@@ -104,8 +104,8 @@ class Datastore:
         files = self.files(match_pattern)
         paths = []
         for file in files:
-            path = f"/{file['Folder_path']}/{file['FileName']}"
-            path = path.replace(f'[{self.name}] ', "")          # remove datastore from path
+            path = f"{file['Folder_path']}/{file['FileName']}"
+            #path = path.replace(f'[{self.name}] ', "")          # remove datastore from path
             paths.append(path)
 
         return sorted(paths)
