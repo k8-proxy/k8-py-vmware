@@ -26,8 +26,6 @@ class VM_Device:
             raise Exception("[disk_get_scsi_controller] no SCSI controllers available")
         return controllers.pop()
 
-
-
     def disk_add_to_vm(self, disk_size, disk_type=None):
         spec            = pyVmomi.vim.vm.ConfigSpec()
         unit_number     = self.disk_get_available_unit_number()
@@ -49,11 +47,13 @@ class VM_Device:
             disk_spec.device.backing.thinProvisioned = True
         return self.reconfig_vm(disk_spec)
 
-        # dev_changes.append(disk_spec)
-        # spec.deviceChange = dev_changes
-        # vm.ReconfigVM_Task(spec=spec)
+    def disk_delete(self, disk):
+        disk_path   = disk.backing.fileName
+        diskManager = self.sdk.content().virtualDiskManager
+        task        = diskManager.DeleteVirtualDisk_Task(name=disk_path, datacenter=self.sdk.datacenter())
+        Task().wait_for_task(task)
 
-        #"%sGB disk added to %s" % (disk_size, vm.config.name)
+
 
     def scsi_controller__add_to_vm(self):
         scsi_spec                                = pyVmomi.vim.vm.device.VirtualDeviceSpec()

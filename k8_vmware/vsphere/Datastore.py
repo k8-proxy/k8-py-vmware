@@ -18,6 +18,9 @@ class Datastore:
 
     def delete(self, target):
         item_path = f'[{self.name}]/{target}'.replace('//','/')
+        return self.delete_path(item_path)
+
+    def delete_path(self, item_path):
         content = self.sdk.content()
         datacenter = self.sdk.datacenter()
         try:
