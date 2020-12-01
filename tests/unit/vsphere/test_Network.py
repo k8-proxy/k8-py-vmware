@@ -2,6 +2,7 @@ from pprint import pprint
 from unittest import TestCase
 
 import pyVmomi
+from osbot_utils.utils.Misc import random_string
 
 from k8_vmware.vsphere.Network import Network
 
@@ -11,11 +12,28 @@ class test_Network(TestCase):
     def setUp(self) -> None:
         self.network = Network()
 
-    def test_list(self):
-        networks = self.network.list()
+
+    def test_networks(self):
+        networks = self.network.networks()
 
         print()
-        pprint(networks)
+        pprint(type(networks))
+
+    def test_port_group_create__port_group_delete(self):
+        name         = 'temp_port_group_' + random_string()                         # temp port_group to created
+        vswitch_name = 'vSwitch0'                                                   # default vswitch name
+        network      = self.network.port_group_create(name, vswitch_name)           # create port_group
+        assert network.name == name                                                 # confirm we received an object with the newly created network
+        assert name in self.network.networks_names()                                # confirm it exists
+        self.network.port_group_delete(name)                                        # delete port_group
+        assert name not in self.network.networks_names()                            # confirm it has been deleted
+
+
+    def test_virtual_switches(self):
+        switches = self.network.virtual_switches()
+        assert len(switches) ==1
+        assert switches[0].name == 'vSwitch0'
+        assert switches[0].spec.bridge.nicDevice == ['vmnic0']
 
     # def test_add_network(self):
     #     import pyVmomi

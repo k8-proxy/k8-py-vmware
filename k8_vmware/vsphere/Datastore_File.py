@@ -76,3 +76,23 @@ class Datastore_File:
 
     def upload(self, local_file):
         return self.requests_upload_to_url(local_file)
+
+
+    # from https://github.com/vmware/pyvmomi-community-samples/blob/83c8bc362d3c3eaec665228618b62a958d0752a7/samples/upload_file_to_datastore.py#L124
+    # DC: see it the code below helps with large downloads
+    # This may or may not be useful to the person who writes the download example
+    # def download(remote_file_path, local_file_path):
+    #    resource = "/folder/%s" % remote_file_path.lstrip("/")
+    #    url = self._get_url(resource)
+    #
+    #    if sys.version_info >= (2, 6):
+    #        resp = self._do_request(url)
+    #        CHUNK = 16 * 1024
+    #        fd = open(local_file_path, "wb")
+    #        while True:
+    #            chunk = resp.read(CHUNK)
+    #            if not chunk: break
+    #            fd.write(chunk)
+    #        fd.close()
+    #    else:
+    #        urllib.urlretrieve(url, local_file_path)

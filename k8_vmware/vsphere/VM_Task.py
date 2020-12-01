@@ -20,7 +20,7 @@ class VM_Task:
             vm_name = self.vm.name()                    # capture the vm_name
             task_destroy = self.vm.vm.Destroy_Task()    # delete the vm
             Task().wait_for_task(task_destroy)          # wait until deletion is done
-            Datastore().folder_delete(vm_name)          # delete folder created by VM
+            #Datastore().folder_delete(vm_name)          # todo remove this line once confirmed there are no side effects (not neeeded any more) delete folder created by VM
             return task_destroy
 
 

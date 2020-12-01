@@ -9,6 +9,9 @@ from k8_vmware.vsphere.Sdk import Sdk
 
 from pyVmomi import pyVmomi
 
+from k8_vmware.vsphere.VM import VM
+
+
 class test_Sdk(TestCase_VM):
     vm_name = f"tests__unit__" + __name__
 
@@ -71,7 +74,7 @@ class test_Sdk(TestCase_VM):
 
     def test_get_object_virtual_machine(self):
         name = self.vm.name()
-        vm   = self.sdk.get_object_virtual_machine(name)
+        vm   = VM(self.sdk.get_object_virtual_machine(name))
         assert vm.name() == name
 
     def test_get_objects(self):

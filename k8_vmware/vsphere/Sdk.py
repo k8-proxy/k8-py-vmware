@@ -54,7 +54,9 @@ class Sdk:
             return VM(vm)
 
     def find_by_name(self, name):
-        return self.get_object_virtual_machine(name)
+        vm = self.get_object_virtual_machine(name)
+        if vm:
+            return VM(vm)
 
     def find_by_uuid(self, uuid):
         search_index = self.content().searchIndex
@@ -137,10 +139,8 @@ class Sdk:
             if object.name == name:
                 return object
 
-    def get_object_virtual_machine(self, name):
-        vm = self.get_object(pyVmomi.vim.VirtualMachine, name)
-        if vm:
-            return VM(vm)
+    def get_object_network        (self, name): return self.get_object(pyVmomi.vim.Network       , name)
+    def get_object_virtual_machine(self, name): return self.get_object(pyVmomi.vim.VirtualMachine, name)
 
     def get_objects(self, vim_type=None):
         if vim_type:

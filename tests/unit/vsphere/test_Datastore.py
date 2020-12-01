@@ -53,11 +53,14 @@ class test_Datastore(TestCase):
 
 
     def test_folder_create__delete(self):
+        parent_folder = "an-parent-folder"
+        folder_name   = f"{parent_folder}/random_name_new_folder_{random_string()}"
 
-        folder_name = f"random_name_new_folder_{random_string()}"
-
-        assert self.datastore.folder_create(folder_name) == True
-        assert self.datastore.folder_delete(folder_name) == True
+        assert self.datastore.folder_create(folder_name  ) == True        # create folder
+        assert self.datastore.folder_delete(folder_name  ) == True        # delete folder
+        assert self.datastore.folder_delete(folder_name  ) == False       # confirm it is not there
+        assert self.datastore.folder_delete(parent_folder) == True        # although documentation says that delete is recursive, the parent folder was still here (https://vdc-download.vmware.com/vmwb-repository/dcr-public/b50dcbbf-051d-4204-a3e7-e1b618c1e384/538cf2ec-b34f-4bae-a332-3820ef9e7773/vim.FileManager.html#deleteFile)
+        assert self.datastore.folder_delete(parent_folder) == False       # confirm parent folder was deleted
 
     ## misc tests
 
