@@ -155,17 +155,25 @@ class Sdk:
     def get_objects_Datacenters      (self): return self.get_objects(pyVmomi.vim.Datacenter     )
     def get_objects_Datastore        (self): return self.get_objects(pyVmomi.vim.Datastore      )
     def get_objects_Folders          (self): return self.get_objects(pyVmomi.vim.Folder         )
+
     def get_objects_Hosts            (self): return self.get_objects(pyVmomi.vim.HostSystem     )
     def get_objects_Networks         (self): return self.get_objects(pyVmomi.vim.Network        )
     def get_objects_ResourcePools    (self): return self.get_objects(pyVmomi.vim.ResourcePool   )
     def get_objects_StoragePods      (self): return self.get_objects(pyVmomi.vim.StoragePod     )
     def get_objects_Virtual_Machines (self): return self.get_objects(pyVmomi.vim.VirtualMachine )
 
+
+
     def resource_pool(self):
         hosts =  self.datacenter().hostFolder.childEntity
         for host in hosts:
             if hasattr(host, 'resourcePool'):
                 return host.resourcePool
+
+    def vm(self, vm_name):
+        vm = self.get_object_virtual_machine(vm_name)
+        if vm:
+            return VM(vm)
 
     def vms(self):
         vms = []

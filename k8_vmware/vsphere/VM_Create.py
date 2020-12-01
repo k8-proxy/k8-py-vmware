@@ -1,3 +1,5 @@
+from random import randint
+
 import pyVmomi
 from osbot_utils.utils.Misc import random_string
 
@@ -15,6 +17,56 @@ class VM_Create:
         self.vm         : VM   = None                                          # will have the VM object after creation
         self.devices    : list = []
 
+    # def add_device_cdrom(self, ctl_device, cdrom_type, iso_path=None, unit_number=0):
+    #     cdrom_spec                      = pyVmomi.vim.vm.device.VirtualDeviceSpec()
+    #     cdrom_spec.operation            = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
+    #     cdrom_spec.device               = pyVmomi.vim.vm.device.VirtualCdrom()
+    #     cdrom_spec.device.controllerKey = ctl_device.key
+    #     if isinstance  (ctl_device, pyVmomi.vim.vm.device.VirtualIDEController ): cdrom_spec.device.key = -randint(3000, 3999)
+    #     elif isinstance(ctl_device, pyVmomi.vim.vm.device.VirtualAHCIController): cdrom_spec.device.key = -randint(16000, 16999)
+    #     cdrom_spec.device.unitNumber = unit_number
+    #     cdrom_spec.device.connectable = pyVmomi.vim.vm.device.VirtualDevice.ConnectInfo()
+    #     cdrom_spec.device.connectable.allowGuestControl = True
+    #     cdrom_spec.device.connectable.startConnected = (cdrom_type != "none")
+    #     if cdrom_type in ["none", "client"]:
+    #         cdrom_spec.device.backing = pyVmomi.vim.vm.device.VirtualCdrom.RemotePassthroughBackingInfo()
+    #     elif cdrom_type == "iso":
+    #         cdrom_spec.device.backing = pyVmomi.vim.vm.device.VirtualCdrom.IsoBackingInfo(fileName=iso_path)
+    #         cdrom_spec.device.connectable.connected = True
+    #     return cdrom_spec
+
+    def add_device__scsi(self):
+        scsi_ctr                                = pyVmomi.vim.vm.device.VirtualDeviceSpec()
+        scsi_ctr.operation                      = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
+        scsi_ctr.device                         = pyVmomi.vim.vm.device.ParaVirtualSCSIController()
+        scsi_ctr.device.deviceInfo              = pyVmomi.vim.Description()
+        scsi_ctr.device.slotInfo                = pyVmomi.vim.vm.device.VirtualDevice.PciBusSlotInfo()
+        scsi_ctr.device.slotInfo.pciSlotNumber  = 16
+        scsi_ctr.device.controllerKey           = 100
+        scsi_ctr.device.unitNumber              = 3
+        scsi_ctr.device.busNumber               = 0
+        scsi_ctr.device.hotAddRemove            = True
+        scsi_ctr.device.sharedBus               = 'noSharing'
+        scsi_ctr.device.scsiCtlrUnitNumber      = 7
+        self.devices.append(scsi_ctr)
+        return scsi_ctr
+
+    def add_device__disk(self, sizeGB, vm_name, scsi_ctr):
+        unit_number                         = 0
+        controller                          = scsi_ctr.device
+        disk_spec                           = pyVmomi.vim.vm.device.VirtualDeviceSpec()
+        disk_spec.fileOperation             = "create"
+        disk_spec.operation                 = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
+        disk_spec.device                    = pyVmomi.vim.vm.device.VirtualDisk()
+        disk_spec.device.backing            = pyVmomi.vim.vm.device.VirtualDisk.FlatVer2BackingInfo()
+        disk_spec.device.backing.diskMode   = 'persistent'
+        disk_spec.device.backing.fileName   = '[%s] %s/%s.vmdk' % (self.data_store, vm_name, vm_name)
+        disk_spec.device.unitNumber         = unit_number
+        disk_spec.device.capacityInKB       = sizeGB * 1024 * 1024
+        disk_spec.device.controllerKey      = controller.key
+        self.devices.append(disk_spec)
+        return disk_spec
+
     def add_device__nic(self, network):
         nicspec                                      = pyVmomi.vim.vm.device.VirtualDeviceSpec()
         nic_type                                     = pyVmomi.vim.vm.device.VirtualVmxnet3()
@@ -28,20 +80,9 @@ class VM_Create:
         nicspec.device.connectable.startConnected    = True
         nicspec.device.connectable.allowGuestControl = True
         self.devices.append(nicspec)
-        return self
+        return nicspec
 
-    #     nicspec = pyVmomi.vim.vm.device.VirtualDeviceSpec()
-    #     nicspec.operation = pyVmomi.vim.vm.device.VirtualDeviceSpec.Operation.add
-    #     nic_type = pyVmomi.vim.vm.device.VirtualVmxnet3()
-    #     nicspec.device = nic_type
-    #     nicspec.device.deviceInfo = pyVmomi.vim.Description()
-    #     nicspec.device.backing = pyVmomi.vim.vm.device.VirtualEthernetCard.NetworkBackingInfo()
-    #     nicspec.device.backing.network = net_name
-    #     nicspec.device.backing.deviceName = net_name.name
-    #     nicspec.device.connectable = pyVmomi.vim.vm.device.VirtualDevice.ConnectInfo()
-    #     nicspec.device.connectable.startConnected = True
-    #     nicspec.device.connectable.allowGuestControl = True
-    #     devices.append(nicspec)
+
 
 
     def create(self):
