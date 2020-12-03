@@ -1,4 +1,5 @@
 import pyVmomi
+from osbot_utils.utils.Misc import wait
 
 from tests.unit.vsphere.VM_Keystroke import VM_Keystroke
 
@@ -128,6 +129,10 @@ class VM:
         VM_Keystroke(self).send_text(text)
         return self
 
+    def send_enter(self):
+        VM_Keystroke(self).enter()
+        return self
+
     def summary(self):
         return self.vm.summary                              # will make REST call to RetrievePropertiesEx
 
@@ -141,5 +146,8 @@ class VM:
     def uuid(self):
         return self.config().uuid
 
+    def wait(self, seconds):                    # to help with fluent code
+        wait(seconds)
+        return self
     def __str__(self):
         return f'[VM] {self.name()}'
