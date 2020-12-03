@@ -1,11 +1,8 @@
 from unittest import TestCase
 
 from osbot_utils.utils.Misc import random_string
-
-from k8_vmware.helpers.TestCase_VM import TestCase_VM
 from k8_vmware.vsphere.Sdk import Sdk
-from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
-from tests.unit.vsphere.VM_Keystroke import VM_Keystroke
+from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
 
 
 class test_VM_Keystroke(TestCase):
