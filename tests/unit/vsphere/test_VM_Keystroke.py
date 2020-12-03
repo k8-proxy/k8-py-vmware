@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import pytest
 from osbot_utils.utils.Misc import random_string
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
@@ -12,6 +13,8 @@ class test_VM_Keystroke(TestCase):
         sdk = Sdk()
         self.vm = sdk.vm('photon')                  # todo: refactor to use a VM we know will exist in the target Server
         self.vm_keystroke = VM_Keystroke(self.vm)
+        if self.vm is None:
+            pytest.skip(f"target server did not have vm {self.vm_name}")
 
     # def test__init__(self):
     #     assert self.vm.name() == test_VM_Keystroke.vm_name
@@ -38,3 +41,9 @@ class test_VM_Keystroke(TestCase):
                              .enter()                  \
                              .esc()
 
+
+    # util method
+    def test_vms_ips(self):         # todo: move to Sdk to method called vms_ips() (returns object with data)
+        sdk = Sdk()
+        for vm in sdk.vms():
+            print(f"{vm.name():30} {vm.powered_state():20} {vm.ip()}")
