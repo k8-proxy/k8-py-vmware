@@ -1,8 +1,6 @@
 import pyVmomi
 from osbot_utils.decorators.Lists import index_by, group_by
-
-from k8_vmware.helpers.View_Soap_Calls import View_Soap_Calls
-from k8_vmware.vsphere.Sdk import Sdk
+from k8_vmware.vsphere.Sdk  import Sdk
 from k8_vmware.vsphere.Task import Task
 
 

@@ -11,6 +11,12 @@ class VM_Screenshot:
         self.ds_screenshot         = None
         self.ds_delete_on_download = ds_delete_on_download
 
+    def __enter__(self, target_file = '/tmp/vm_screeshot.png'):
+        self.path_screenshot = target_file
+
+    def __exit__(self, type, value, traceback):
+        self.download()
+
     def download(self):
         self.save_screnshot_to_datastore()
         return self.download_screenshot_from_datastore()

@@ -109,7 +109,7 @@ class test_Sdk(TestCase_VM):
         assert json_data['_vimid'  ] == moid
         assert json_data['_vimtype'] == "vim.VirtualMachine"
 
-    def test_tasks(self):
+    def test_tasks(self):               # todo: find better way to do this since when running multiple tests the self.sdk.tasks_recent() can take multiple seconds to execute
         self.sdk.find_by_ip('aaaaaa')
         recent_tasks    = self.sdk.tasks_recent()
         most_recent_one = recent_tasks.pop()

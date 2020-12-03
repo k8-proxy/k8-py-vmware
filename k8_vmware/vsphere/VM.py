@@ -1,5 +1,7 @@
 import pyVmomi
 
+from tests.unit.vsphere.VM_Keystroke import VM_Keystroke
+
 
 class VM:
     def __init__(self, vm):
@@ -106,11 +108,25 @@ class VM:
     def powered_state(self):
         return self.runtime().powerState
 
+    def power_on(self):
+        return self.task().power_on()
+
+    def power_off(self):
+        return self.task().power_off()
+
     def powered_on(self):
         return self.powered_state() == 'poweredOn'
 
     def powered_off(self):
         return self.powered_state() == 'poweredOff'
+
+    def screnshot(self, target_file):
+        from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
+        return VM_Screenshot(target_file=target_file).download()
+
+    def send_text(self, text):
+        VM_Keystroke(self).send_text(text)
+        return self
 
     def summary(self):
         return self.vm.summary                              # will make REST call to RetrievePropertiesEx

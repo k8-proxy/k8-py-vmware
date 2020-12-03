@@ -38,18 +38,3 @@ class test_Screeshot(TestCase_VM):
         assert datastore_file.ds_file        == self.vm.name() + "-1.png"
 
         assert self.screenshot.ds_screenshot == path_screenshot           # confirm save_screnshot_to_datastore saves the path of the downloaded file to the ds_screenshot variable
-
-
-    # def test_take_screnshot(self):
-    #     sdk = self.ova.sdk
-    #     vm = sdk.vm('photon')
-    #     task = vm.vm.CreateScreenshot_Task()
-    #     Task().wait_for_task(task)
-    #     path_screenshot = task.info.result.replace("[datastore1] ", "")
-    #     #path_screenshot = "[datastore1] photon/photon-3.png"
-    #     #path_screenshot = "photon/photon-3.png"
-    #     datastore = Datastore()
-    #     files = datastore.files_names("photon/*")
-    #     print()
-    #     datastore_file = Datastore_File(ds_folder='', ds_file= path_screenshot)
-    #     print(datastore_file.download())

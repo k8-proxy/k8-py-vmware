@@ -2,6 +2,7 @@ from pprint import pprint
 from unittest import TestCase
 
 from k8_vmware.helpers.Temp_VM import Temp_VM
+from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
 
 
 class test_VM(TestCase):
@@ -22,3 +23,7 @@ class test_VM(TestCase):
 
     def test_info(self):
         assert set(self.vm.info()) == {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'Host', 'HostName', 'IP', 'MOID', 'MaxCpuUsage', 'MaxMemoryUsage', 'MemorySizeMB', 'Name', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID'} != {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'IP', 'MemorySizeMB', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID', 'host', 'maxCpuUsage', 'maxMemoryUsage'}
+
+    def test_send_text(self):
+        self.vm.power_on()
+        self.vm.send_text("a")
