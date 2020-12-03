@@ -139,6 +139,7 @@ class Sdk:
             if object.name == name:
                 return object
 
+    def get_object_folder         (self, name): return self.get_object(pyVmomi.vim.Folder        , name)
     def get_object_network        (self, name): return self.get_object(pyVmomi.vim.Network       , name)
     def get_object_virtual_machine(self, name): return self.get_object(pyVmomi.vim.VirtualMachine, name)
 

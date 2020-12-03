@@ -9,12 +9,12 @@ from k8_vmware.vsphere.Sdk import Sdk
 
 class Datastore_File:
 
-    def __init__(self, ds_folder, ds_file):
+    def __init__(self, ds_folder=None, ds_file=None):
         self.sdk = Sdk()
         self.datastore   = Datastore()
         self.config      = Config()
-        self.ds_folder   = ds_folder
-        self.ds_file     = ds_file
+        self.ds_folder   = ds_folder or ""
+        self.ds_file     = ds_file   or ""
         self.verify_cert = False
 
     def get_headers(self):
@@ -37,13 +37,31 @@ class Datastore_File:
         return {"dsName": self.datastore.name, "dcPath": self.datastore.datacenter}
 
     def get_remote_file(self):
-        return f"{self.ds_folder}/{self.ds_file}"
+        return f"{self.ds_folder}/{self.ds_file}"           # todo: add check for when both values are '' (raise exception)
 
     def get_server_url(self):
         host        = self.get_host()
         remote_file = self.get_remote_file()
         resource    = "/folder/" + remote_file
         return  "https://" + host + ":443" + resource
+
+    def create_path_datastore(self, ds_name, ds_folder, ds_file):
+        return f"[{ds_name}] {ds_folder}/{ds_file}"
+
+    def set_file_from_path_datastore(self, path_datastore):         # todo: see if there is a better way to do this (more type safe)
+        # expected path is [{datastore}] {folder}/{file}
+
+        (ds_name, path_file) = path_datastore.split('] ')         # split on first instance of ']
+        (ds_folder, ds_file) = path_file.rsplit('/', 1)           # split folder and file
+
+        ds_name = ds_name.replace('[', "")                      # remove leading [
+
+        self.datastore = Datastore(name=ds_name)
+        self.ds_folder = ds_folder
+        self.ds_file   = ds_file
+
+        return self
+
 
     def requests_download_from_url(self):
         tmp_file    = temp_file()

@@ -2,12 +2,14 @@ import pyVmomi
 
 from k8_vmware.vsphere.Sdk import Sdk
 
-
+# todo: refactor this to take a task param and have one command to execute it
+#       idea is that this class can be called using this syntax Task(task).execute()
 class Task:
     def __init__(self):
         self.sdk = Sdk()
 
-    def wait_for_task(self, task):
+
+    def wait_for_task(self, task):          # todo: refactor to a better name
         self.wait_for_tasks([task])
         return task
 

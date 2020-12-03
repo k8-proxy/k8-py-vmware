@@ -3,19 +3,44 @@ from unittest import TestCase
 from osbot_utils.utils.Files import file_contents, temp_file, file_exists, file_delete
 from osbot_utils.utils.Misc import random_string
 
+from k8_vmware.vsphere.Datastore import Datastore
 from k8_vmware.vsphere.Datastore_File import Datastore_File
 
 
 class test_Datastore_File(TestCase):
 
     def setUp(self) -> None:
-        ds_folder           = ''
-        ds_file             = f"test_Datastore_File-{random_string()}.txt"
-        self.datastore_file = Datastore_File(ds_folder=ds_folder, ds_file=ds_file)
+        self.ds_folder      = ''
+        self.ds_file        = f"test_Datastore_File-{random_string()}.txt"
+        self.datastore_file = Datastore_File(ds_folder=self.ds_folder, ds_file=self.ds_file)
+        print()
 
-    # def test_download(self):
-    #     tmp_file = self.datastore_file.download()
-    #     print(file_contents(tmp_file))
+    def test__init__(self):
+        print('------')
+        assert self.datastore_file.datastore.name == 'datastore1'
+        assert self.datastore_file.ds_folder      == self.ds_folder
+        assert self.datastore_file.ds_file        == self.ds_file
+
+        #test other __init__ modes
+
+        datastore_file = Datastore_File()
+        assert datastore_file.datastore.name == 'datastore1'
+        assert datastore_file.ds_folder      == ''
+        assert datastore_file.ds_file        == ''
+
+    def test_set_file_from_path_datastore(self):
+
+        def confirm_values_are_set_correctly(ds_name, ds_folder, ds_file):                          # help method
+            path_datastore = self.datastore_file.create_path_datastore(ds_name, ds_folder, ds_file)
+            self.datastore_file.set_file_from_path_datastore(path_datastore)
+            assert self.datastore_file.datastore.name == ds_name
+            assert self.datastore_file.ds_folder      == ds_folder
+            assert self.datastore_file.ds_file        == ds_file
+
+        confirm_values_are_set_correctly("another datastore", "an folder/an subfolder", "an file")
+        confirm_values_are_set_correctly("another datastore", ""                      , "an file")  # when ds_folder is not set
+        confirm_values_are_set_correctly("another datastore", ""                      , ""       )  # when ds_file is not set
+        confirm_values_are_set_correctly(""                 , ""                      , ""       )  # when ds_name is not set
 
     def test_upload__download(self):
         local_file = temp_file(file_contents="This is a local file - " + random_string())   # create local temp file
@@ -28,72 +53,3 @@ class test_Datastore_File(TestCase):
 
         assert self.datastore_file.delete() is True                                         # delete temp file from data_store
         file_delete(local_file)                                                             # delete local temp file
-
-    # def test_upload_file(self):
-    #     ds_folder = ''
-    #     ds_file   = 'new-one.txt'
-    #     target_file = temp_file(".txt")
-    #     self.datata
-    #
-    #
-    # def __test_upload_file(self):
-    #     sdk = self.datastore.sdk
-    #     datacenter = sdk.datacenter()
-    #
-    #     host = Config().vsphere_server_details()['host']
-    #     #remote_file='aaa.txt'
-    #     remote_file = 'new-one.txt'
-    #     resource = "/folder/" + remote_file
-    #     params = {"dsName": self.datastore.name, "dcPath": datacenter.name}
-    #
-    #     http_url = "https://" + host + ":443" + resource
-    #     def get_cookie_as_header():
-    #         client_cookie = sdk.service_instance()._stub.cookie
-    #         cookie_name = client_cookie.split("=", 1)[0]
-    #         cookie_value = client_cookie.split("=", 1)[1].split(";", 1)[0]
-    #         cookie_path = client_cookie.split("=", 1)[1].split(";", 1)[1].split(";", 1)[0].lstrip()
-    #         cookie_text = " " + cookie_value + "; $" + cookie_path
-    #         cookie = dict()
-    #         cookie[cookie_name] = cookie_text
-    #         return cookie
-    #
-    #     cookie = get_cookie_as_header()
-    #     path_file = temp_file(file_contents="This is a local file")
-    #     pprint(params)
-    #     pprint(http_url)
-    #
-    #     headers = {'Content-Type': 'application/octet-stream'}
-    #
-    #     import ssl
-    #     import requests
-    #
-    #     sslContext = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-    #     sslContext.verify_mode = ssl.CERT_NONE
-    #
-    #     verify_cert = False
-    #
-    #     print("download file: " + http_url)
-    #     tmp_file = temp_file(extension='new_file.txt')
-    #     with open(tmp_file, "wb") as f:
-    #     # Connect and upload the file
-    #         response = requests.get(http_url, params=params, headers=headers, cookies=cookie, verify=verify_cert)
-    #         f.write(response.content)
-    #         print(response.status_code)
-    #
-    #     print(f'file {tmp_file}')
-    #     print(file_contents(tmp_file))
-    #
-    #
-    #
-    #     # # upload file
-    #     # with open(path_file, "rb") as f:
-    #     #     # Connect and upload the file
-    #     #
-    #     #     request = requests.put(http_url,
-    #     #                            params=params,
-    #     #                            data=f,
-    #     #                            headers=headers,
-    #     #                            cookies=cookie,
-    #     #                            verify=verify_cert)
-    #     #     print(request)
-    #     #     print(request.text)

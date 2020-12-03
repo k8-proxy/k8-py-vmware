@@ -23,6 +23,10 @@ class VM_Process:
     def exec(self, program_path, arguments=""):
         return self.start_process_return_stdout(program_path, arguments)
 
+    def set_vm_account(self, username, password):
+        self.vm_account['username'] = username
+        self.vm_account['password'] = password
+
     def set_vm_account_from_env(self, env_prefix):
         self.vm_account['username'] = environ.get(f'{env_prefix}_USERNAME')
         self.vm_account['password'] = environ.get(f'{env_prefix}_PASSWORD')
