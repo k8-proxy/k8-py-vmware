@@ -10,10 +10,10 @@ class VM_Screenshot:
         self.path_screenshot       = target_file
         self.ds_screenshot         = None
         self.ds_delete_on_download = ds_delete_on_download
-        return vm
 
     def __enter__(self, target_file = '/tmp/vm_screeshot.png'):
         self.path_screenshot = target_file
+        return self.vm
 
     def __exit__(self, type, value, traceback):
         self.download()
