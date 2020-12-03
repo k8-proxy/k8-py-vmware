@@ -1,7 +1,7 @@
 import pyVmomi
 from osbot_utils.utils.Misc import wait
 
-from tests.unit.vsphere.VM_Keystroke import VM_Keystroke
+from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
 
 
 class VM:
