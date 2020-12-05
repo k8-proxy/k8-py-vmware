@@ -22,7 +22,7 @@ class test_View_Soap_Calls(TestCase):
         with self.view_soap_calls:
             assert environ.get('show_soap_calls'    ) == "True"
             assert environ.get('show_soap_calls_xml') is None
-            
+
         assert environ.get('show_soap_calls'    ) is None
         assert environ.get('show_soap_calls_xml') is None
 

@@ -24,7 +24,7 @@ jobs:
 
       - name: Run tests with pytest
         run: |
-          pytest -v --durations=0 -cov=k8_vmware tests
+          pytest -v --durations=0 --cov=k8_vmware tests
           coveralls
         env:
           VM_USERNAME         : ${{ secrets.VM_USERNAME          }}
