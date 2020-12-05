@@ -3,7 +3,6 @@ from osbot_utils.utils.Misc import wait
 
 from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
 
-
 class VM:
     def __init__(self, vm):
         self.vm = vm

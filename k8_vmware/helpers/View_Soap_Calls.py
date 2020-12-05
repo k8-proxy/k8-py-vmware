@@ -46,6 +46,7 @@ class View_Soap_Calls:
             environ['show_soap_calls'    ] = "True"
         if self.show_xml:
             environ['show_soap_calls_xml'] = "True"
+        return self
 
 
     def stop(self):
@@ -58,3 +59,4 @@ class View_Soap_Calls:
             print("##### Stopped showing SOAP calls to /sdk endpoint #####")
             print("#######################################################")
             print()
+        return self
