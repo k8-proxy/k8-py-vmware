@@ -1,6 +1,7 @@
 # k8-vmware
 
 [![Run Python Tests](https://github.com/k8-proxy/k8-vmware/workflows/Run%20Python%20Tests/badge.svg)](https://github.com/k8-proxy/k8-vmware/actions)
+[![Coverage Status](https://coveralls.io/repos/github/k8-proxy/k8-vmware/badge.svg?branch=main)](https://coveralls.io/github/k8-proxy/k8-vmware?branch=main)
 
 API that simplifies the use of the [pyvmomi](https://github.com/vmware/pyvmomi) which is a python wrapper around the VMWare ESXi soap-based api (see [VMware vSphere API Reference Documentation](https://code.vmware.com/apis/968))
 
