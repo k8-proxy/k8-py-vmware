@@ -33,8 +33,7 @@ def before_call(*args, **kwargs):
     info = args[2]
     from os import environ
     if environ.get('show_soap_calls'):
-        print(
-            f"[SOAP-CALL] {info.wsdlName:30} : {info.methodResultName}")  # DC use this to see the calls made via the /SDK
+        print(f"[SOAP-CALL] {info.wsdlName:30} : {info.methodResultName}")  # DC use this to see the calls made via the /SDK
     return (args, kwargs)
 
 class View_Soap_Calls:

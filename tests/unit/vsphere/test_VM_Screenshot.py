@@ -24,6 +24,8 @@ class test_Screeshot(TestCase_VM):
 
         # download to specific location
         target_file       = temp_file(extension='.png')
+        #target_file       = '/tmp/vm_screenshot_2.png'
+        #self.screenshot.vm.wait(2)
         path_screenshot_2 = VM_Screenshot(self.vm, target_file).download()
         assert file_exists(path_screenshot_2)
 
