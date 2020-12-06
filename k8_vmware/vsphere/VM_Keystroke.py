@@ -44,7 +44,7 @@ class VM_Keystroke:
 
     def send_key(self, key):
         code, modifiers  = self.convert_key_to_HID(key)
-        self.send_key_stoke(code, modifiers)
+        return self.send_key_stoke(code, modifiers)
 
     def send_text(self, text):
         for char in list(text):

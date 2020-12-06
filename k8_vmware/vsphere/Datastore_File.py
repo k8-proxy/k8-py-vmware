@@ -64,7 +64,7 @@ class Datastore_File:
 
 
     def requests_download_from_url(self):
-        tmp_file    = temp_file()
+        tmp_file    = temp_file(extension=".png")
         cookie      = self.get_request_cookie()
         headers     = self.get_headers()
         params      = self.get_params()

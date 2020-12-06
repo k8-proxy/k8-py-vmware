@@ -120,12 +120,16 @@ class VM:
     def powered_off(self):
         return self.powered_state() == 'poweredOff'
 
-    def screnshot(self, target_file):
+    def screenshot(self, target_file=None):
         from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
-        return VM_Screenshot(target_file=target_file).download()
+        return VM_Screenshot(self, target_file=target_file).download()
 
     def send_text(self, text):
         VM_Keystroke(self).send_text(text)
+        return self
+
+    def send_key(self, text):
+        result = VM_Keystroke(self).send_key(text)
         return self
 
     def send_enter(self):
