@@ -7,7 +7,6 @@ from k8_vmware.helpers.for_osbot_utils.Wrap_Method import Wrap_Method
 class test_Wrap_Method(TestCase):
 
     def setUp(self) -> None:
-        print()
         self.target        = requests.api.request
         self.target_module = requests.api
         self.target_method = 'request'
