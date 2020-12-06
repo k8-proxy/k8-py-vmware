@@ -18,13 +18,59 @@ class test_Wrap_Method(TestCase):
         assert self.wrap_method.target_module == self.target_module
         assert self.wrap_method.target_method == self.target_method
 
-    def test___enter__exist(self):
+    def test___enter__exit__(self):
         assert requests.api.request == self.target
         with self.wrap_method:
             assert requests.api.request == self.wrap_method.wrapper_method
             requests.head('https://www.google.com')
             assert self.wrap_method.calls_count() == 1
         assert requests.api.request == self.target
+
+    def test_after_call(self):
+        def on_after_call(return_value):
+            if type(return_value) is str:
+                return f'status code: {return_value}'
+            else:
+                return f'{return_value.status_code}'
+
+        self.wrap_method.add_on_after_call(on_after_call)
+        self.wrap_method.add_on_after_call(on_after_call)
+
+        with self.wrap_method:
+            requests.head('https://www.google.com')
+
+        assert self.wrap_method.calls_last_one()['return_value'] == 'status code: 200'
+
+    def test_before_call(self):
+        assert self.wrap_method.calls_last_one() == None
+        def on_before_call(*args, **kwargs):
+            args = (args[0], args[1] + '/404')
+            return (args, kwargs)
+
+        self.wrap_method.add_on_before_call(on_before_call)
+
+        with self.wrap_method:
+            requests.head('https://www.google.com')
+
+        assert self.wrap_method.calls_last_one()['return_value'].status_code == 404
+
+    def test_mock_call(self):
+        return_value = 'an result'
+        def mock_call (*args, **kwargs):
+            assert args   == ('head', 'https://www.google.com')
+            assert kwargs == {'allow_redirects': False}
+            return return_value
+
+        self.wrap_method.mock_call = mock_call
+
+
+        with self.wrap_method:
+            assert requests.head('https://www.google.com') == return_value
+
+        assert self.wrap_method.calls == [{ 'args'        : ('head', 'https://www.google.com'),
+                                            'kwargs'      : {'allow_redirects': False},
+                                            'return_value': 'an result'}]
+
 
     def test_wrap__unwrap(self):
         assert requests.api.request == self.target
