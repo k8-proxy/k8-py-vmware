@@ -1,7 +1,10 @@
 from os import environ
 from unittest import TestCase
+from unittest.mock import patch, call
 
 from k8_vmware.helpers.View_Soap_Calls import View_Soap_Calls
+
+
 
 
 class test_View_Soap_Calls(TestCase):
@@ -15,7 +18,8 @@ class test_View_Soap_Calls(TestCase):
         assert environ.get('show_soap_calls'    ) is None
         assert environ.get('show_soap_calls_xml') is None
 
-    def test___enter____exit__(self):
+    @patch('builtins.print')
+    def test___enter____exit__(self, builtins_print):
         assert environ.get('show_soap_calls'    ) is None
         assert environ.get('show_soap_calls_xml') is None
 
@@ -25,6 +29,17 @@ class test_View_Soap_Calls(TestCase):
 
         assert environ.get('show_soap_calls'    ) is None
         assert environ.get('show_soap_calls_xml') is None
+
+
+        assert builtins_print.call_count == 8
+        builtins_print.assert_has_calls([   call(),
+                                            call('*******************************************************'),
+                                            call('***** Staring showing SOAP calls to /sdk endpoint *****'),
+                                            call('*******************************************************'),
+                                            call('#######################################################'),
+                                            call('##### Stopped showing SOAP calls to /sdk endpoint #####'),
+                                            call('#######################################################'),
+                                            call() ])
 
     def test_start(self):                                       #todo add tests that capture the print statements and confirm what was printed. Do this via mocking of print method
         self.view_soap_calls.start()
@@ -50,7 +65,3 @@ class test_View_Soap_Calls(TestCase):
         self.view_soap_calls.start().stop()
         assert environ.get('show_soap_calls'    ) is None
         assert environ.get('show_soap_calls_xml') is None
-
-
-
-

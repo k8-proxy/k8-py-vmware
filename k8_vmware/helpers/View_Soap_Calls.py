@@ -3,7 +3,7 @@
 
 # good to debug performance issues
 
-# todo replace the code below with a hook to the method so that it will work everywhere 
+# todo replace the code below with a hook to the method so that it will work everywhere
 # This is the code added (locally) to line 1352 of the SoapAdapter.py file
 #         from os import environ
 #          if environ.get('show_soap_calls'):
