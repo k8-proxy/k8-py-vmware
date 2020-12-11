@@ -29,6 +29,8 @@ from pyVmomi import SoapAdapter
 
 from k8_vmware.helpers.for_osbot_utils.Wrap_Method import Wrap_Method
 
+# todo: find why this method doesn't not show as covered in coveralls (https://coveralls.io/builds/35484623/source?filename=k8_vmware/helpers/View_Soap_Calls.py)
+#       but it shows ok when running in PyCharm (with Code Coverage enabled)
 def before_call(*args, **kwargs):
     info = args[2]
     from os import environ
