@@ -124,6 +124,9 @@ class Sdk:
         if hasattr(datacenter, 'vmFolder'):
             return datacenter.vmFolder
 
+    def datastore(self):
+        return self.get_objects_Datastore().pop()
+
     def folders(self):
         folders = []
         for child in self.content().rootFolder.childEntity:     # todo: add better support for datacenter
