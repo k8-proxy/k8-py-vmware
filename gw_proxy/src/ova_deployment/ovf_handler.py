@@ -8,6 +8,7 @@ from threading import Timer
 from six.moves.urllib.request import Request, urlopen
 
 from .file_handler import FileHandle
+from .web_handler import WebHandle
 from pyVmomi import vim, vmodl
 
 def get_tarfile_size(tarfile):

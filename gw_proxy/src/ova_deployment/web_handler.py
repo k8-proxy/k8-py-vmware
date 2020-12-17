@@ -1,3 +1,6 @@
+from six.moves.urllib.request import Request, urlopen
+
+
 class WebHandle(object):
     def __init__(self, url):
         self.url = url

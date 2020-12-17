@@ -27,6 +27,7 @@ from pyVim.connect import SmartConnectNoSSL, Disconnect
 from pyVmomi import vim, vmodl
 
 from .ovf_handler import OvfHandler
+from k8_vmware.vsphere.Sdk import Sdk
 
 
 def setup_args():
@@ -124,6 +125,17 @@ def get_largest_free_ds(dc):
         raise Exception('Failed to find any free datastores on %s' % dc.name)
     return largest
 
+def power_on_vm(host, user, pwd, vm_name):
+
+    sdk = Sdk()
+    try:
+        vm = sdk.find_by_name(vm_name)
+        vm.task().power_on()
+    except Exception as e:
+        print(e)
+        raise e
+    
+    return 0
 
 def main():
     args = setup_args()
@@ -193,7 +205,9 @@ def main():
 
     print("Starting deploy...")
     print("ovf_handle:", ovf_handle)
-    return ovf_handle.upload_disks(lease, args.host)
+    print(ovf_handle.upload_disks(lease, args.host))
+
+    return(power_on_vm(args.host, args.user, args.password, args.vm_name))
 
 
 if __name__ == "__main__":
