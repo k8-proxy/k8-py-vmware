@@ -80,6 +80,7 @@ class OvfHandler(object):
         Uploads all the disks, with a progress keep-alive.
         """
         self.lease = lease
+        print("lease:", lease)
         try:
             self.start_timer()
             for fileItem in self.spec.fileItem:

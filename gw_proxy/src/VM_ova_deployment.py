@@ -1,3 +1,6 @@
+from k8-vmware.k8_vmware.vsphere.OVA import *
+
+# main
 #!/usr/bin/env python
 """
 Written by Nathan Prziborowski
@@ -192,7 +195,6 @@ def main():
         return 0
 
     print("Starting deploy...")
-    print("ovf_handle:", ovf_handle)
     return ovf_handle.upload_disks(lease, args.host)
 
 
