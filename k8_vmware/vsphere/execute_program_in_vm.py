@@ -1,6 +1,6 @@
 from __future__ import with_statement
 import atexit
-from tools import cli
+from ..ova_deployement.tools import cli
 from pyVim import connect
 from pyVmomi import vim, vmodl
 
@@ -68,7 +68,7 @@ def main():
         vm = content.searchIndex.FindByUuid(datacenter=None,
                                             uuid=args.vm_uuid,
                                             vmSearch=True,
-                                            instanceUuid=False)
+                                            instanceUuid=True)
 
         if not vm:
             raise SystemExit("Unable to locate the virtual machine.")
