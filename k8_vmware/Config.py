@@ -2,6 +2,7 @@ from os import environ
 from dotenv import load_dotenv
 
 class Config():
+
     def __init__(self):
         load_dotenv()
 
@@ -19,4 +20,12 @@ class Config():
         return  {
                     "username": environ.get('VM_USERNAME'),
                     "password": environ.get('VM_PASSWORD')
+                }
+
+    def esxi_ssh_config(self):
+        return  {
+                    "ssh_host": environ.get('VSPHERE_HOST'     ),
+                    "ssh_user": environ.get('VSPHERE_USERNAME' ),
+                    "ssh_key" : environ.get('ESXI_SSH_KEY'     ),
+
                 }

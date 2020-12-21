@@ -59,6 +59,12 @@ class VM:
     def guest(self):
         return self.summary().guest
 
+    def id(self):
+        return f"vim.{self.vm._wsdlName}:{self.vm._moId}"
+        #note: we can also get this value from these methods (but they will do an extra request to the server)
+        #  str(self.resource_config().entity)
+        #  self.summary().vm
+
     def info(self):
         summary = self.summary()                # need to do this since each reference to self.vm.summary.config is call REST call to the server
         #print(summary)
@@ -67,24 +73,24 @@ class VM:
         runtime = summary.runtime
 
         info = {
-                    "Annotation"        : config.annotation      ,
-                    "BootTime"          : str(runtime.bootTime)  ,
-                    "ConnectionState"   : runtime.connectionState,
-                    "GuestId"           : config.guestId         ,
-                    "GuestFullName"     : config.guestFullName   ,
-                    "Host"              : runtime.host           ,
-                    "HostName"          : guest.hostName         ,
-                    "IP"                : guest.ipAddress        ,
-                    "MemorySizeMB"      : config.memorySizeMB    ,
-                    "MOID"              : self.vm._moId          ,
-                    "Name"              : config.name            ,
-                    "MaxCpuUsage"       : runtime.maxCpuUsage    ,
-                    "MaxMemoryUsage"    : runtime.maxMemoryUsage ,
-                    "NumCpu"            : config.numCpu          ,
-                    "PathName"          : config.vmPathName      ,
-                    "StateState"        : runtime.powerState     ,
-                    "Question"          : None                   ,
-                    "UUID"              : config.uuid
+                    "Boot_Time"          : str(runtime.bootTime)  ,
+                    "Connection_State"   : runtime.connectionState,
+                    "Guest_Id"           : config.guestId         ,
+                    "Guest_Full_Name"    : config.guestFullName   ,
+                    "Host"               : runtime.host           ,
+                    "HostName"           : guest.hostName         ,
+                    "IP"                 : guest.ipAddress        ,
+                    "Memory_Size_MB"     : config.memorySizeMB    ,
+                    "MOID"               : self.vm._moId          ,
+                    "Name"               : config.name            ,
+                    "Max_Cpu_Usage"      : runtime.maxCpuUsage    ,
+                    "Max_Memory_Usage"   : runtime.maxMemoryUsage ,
+                    "Notes"              : config.annotation      ,
+                    "Num_Cpu"            : config.numCpu          ,
+                    "Path_Name"          : config.vmPathName      ,
+                    "State_State"        : runtime.powerState     ,
+                    "Question"           : None                   ,
+                    "UUID"               : config.uuid
             }
         # if guest            != None: info['IP']        = guest.ipAddress
         if runtime.question != None: info['Question']  = runtime.question.text,
@@ -103,7 +109,7 @@ class VM:
         return self.config().name
 
     def moid(self):
-        return self.vm._moId
+        return str(self.vm._moId)
 
     def powered_state(self):
         return self.runtime().powerState
@@ -119,6 +125,9 @@ class VM:
 
     def powered_off(self):
         return self.powered_state() == 'poweredOff'
+
+    def resource_config(self):
+        return self.vm.resourceConfig
 
     def screenshot(self, target_file=None):
         from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
@@ -154,3 +163,6 @@ class VM:
         return self
     def __str__(self):
         return f'[VM] {self.name()}'
+
+
+

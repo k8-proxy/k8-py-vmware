@@ -24,7 +24,7 @@ class test_VM(TestCase):
         self.vm = test_VM.temp_vm.vm
 
     def test_info(self):
-        assert set(self.vm.info()) == {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'Host', 'HostName', 'IP', 'MOID', 'MaxCpuUsage', 'MaxMemoryUsage', 'MemorySizeMB', 'Name', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID'} != {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'IP', 'MemorySizeMB', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID', 'host', 'maxCpuUsage', 'maxMemoryUsage'}
+        assert set(self.vm.info()) == {'Notes', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'Host', 'HostName', 'IP', 'MOID', 'MaxCpuUsage', 'MaxMemoryUsage', 'MemorySizeMB', 'Name', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID'} != {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'IP', 'MemorySizeMB', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID', 'host', 'maxCpuUsage', 'maxMemoryUsage'}
 
     def test_controller_ide(self):
         ide = self.vm.controller_ide()
@@ -49,6 +49,7 @@ class test_VM(TestCase):
         assert hardware.numCoresPerSocket == 1
         assert hardware.memoryMB          == 1024
         assert len(hardware.device)       == 9
+
 
     def test_power_off(self):
         assert self.vm.powered_state()        == 'poweredOff'

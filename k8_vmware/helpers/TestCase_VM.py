@@ -11,11 +11,11 @@ class TestCase_VM(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        vm_name             : str     = cls.vm_name or TestCase_VM.vm_name
-        TestCase_VM.temp_vm : Temp_VM = Temp_VM(vm_name=vm_name)
-        TestCase_VM.sdk     : Sdk     = TestCase_VM.temp_vm.sdk
-        TestCase_VM.vm      : VM      = TestCase_VM.temp_vm.create()
+        vm_name     : str     = cls.vm_name or cls.vm_name
+        cls.temp_vm : Temp_VM = Temp_VM(vm_name=vm_name)
+        cls.sdk     : Sdk     = cls.temp_vm.sdk
+        cls.vm      : VM      = cls.temp_vm.create()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        TestCase_VM.temp_vm.delete()
+        cls.temp_vm.delete()

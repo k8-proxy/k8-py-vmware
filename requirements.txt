@@ -9,5 +9,3 @@ coveralls
 #pytest-xdist       # didn't work (need to find out why)
 coverage
 
-# required by OVA import (not sure we need this)
-pyvmomi

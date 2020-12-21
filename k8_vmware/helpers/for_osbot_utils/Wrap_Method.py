@@ -1,3 +1,4 @@
+# todo: note sure if this is the best name "Hook _Method" might be better
 class Wrap_Method:
     def __init__(self, target_module, target_method):
         self.target_module   = target_module
