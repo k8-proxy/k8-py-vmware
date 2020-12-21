@@ -31,7 +31,7 @@ class test_Network(TestCase):
 
     def test_virtual_switches(self):
         switches = self.network.virtual_switches()
-        assert len(switches) ==1
+        assert len(switches) > 0
         assert switches[0].name == 'vSwitch0'
         assert switches[0].spec.bridge.nicDevice == ['vmnic0']
 

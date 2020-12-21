@@ -23,8 +23,8 @@ class test_VM_Device(TestCase_VM):
         assert len(self.vm_device.vm.devices()) == 10
         cdrom = self.vm_device.vm.devices_Cdroms().pop()
         assert cdrom.deviceInfo.label   == 'CD/DVD drive 1'
-        assert cdrom.deviceInfo.summary == f'ISO {iso_path}'
-        assert cdrom.backing.fileName   == iso_path
+        assert cdrom.deviceInfo.summary == f'ISO {iso_path}'.replace('/',' ')
+        assert cdrom.backing.fileName   == iso_path.replace('/',' ')
         self.vm_device.remove_device(cdrom)
 
     def test_cdrom_add_to_vm(self):

@@ -24,7 +24,7 @@ class test_VM(TestCase):
         self.vm = test_VM.temp_vm.vm
 
     def test_info(self):
-        assert set(self.vm.info()) == {'Notes', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'Host', 'HostName', 'IP', 'MOID', 'MaxCpuUsage', 'MaxMemoryUsage', 'MemorySizeMB', 'Name', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID'} != {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'IP', 'MemorySizeMB', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID', 'host', 'maxCpuUsage', 'maxMemoryUsage'}
+        assert set(self.vm.info()) == {'Notes', 'Boot_Time', 'Connection_State', 'Guest_Full_Name', 'Guest_Id', 'Host', 'Host_Name', 'IP', 'MOID', 'Max_Cpu_Usage', 'Max_Memory_Usage', 'Memory_Size_MB', 'Name', 'Num_Cpu', 'Path_Name', 'Question', 'State_State', 'UUID'} != {'Annotation', 'BootTime', 'ConnectionState', 'GuestFullName', 'GuestId', 'IP', 'MemorySizeMB', 'NumCpu', 'PathName', 'Question', 'StateState', 'UUID', 'host', 'maxCpuUsage', 'maxMemoryUsage'}
 
     def test_controller_ide(self):
         ide = self.vm.controller_ide()

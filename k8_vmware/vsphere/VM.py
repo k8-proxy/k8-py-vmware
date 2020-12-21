@@ -78,7 +78,7 @@ class VM:
                     "Guest_Id"           : config.guestId         ,
                     "Guest_Full_Name"    : config.guestFullName   ,
                     "Host"               : runtime.host           ,
-                    "HostName"           : guest.hostName         ,
+                    "Host_Name"          : guest.hostName         ,
                     "IP"                 : guest.ipAddress        ,
                     "Memory_Size_MB"     : config.memorySizeMB    ,
                     "MOID"               : self.vm._moId          ,

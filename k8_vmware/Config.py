@@ -16,6 +16,15 @@ class Config():
                     "password": environ.get('VSPHERE_PASSWORD')
                 }
 
+    def vsphere_set_server_details(self, host=None, username=None, password=None):
+        if host:
+            environ['VSPHERE_HOST'] = host
+        if username:
+            environ['VSPHERE_USERNAME'] = username
+        if password:
+            environ['VSPHERE_PASSWORD'] = password
+        return self.vsphere_server_details()
+
     def vm_account(self):
         return  {
                     "username": environ.get('VM_USERNAME'),

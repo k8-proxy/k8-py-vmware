@@ -38,7 +38,6 @@ class VM_Server_113_4:
 
     # Ubuntu VM tests
     def create_ubuntu_vm(self):
-        return
         vm_name    = "test_ubuntu"
         iso_ubuntu = "[datastore1] isos/ubuntu-20.04.1-live-server-amd64.iso"
 
