@@ -1,16 +1,5 @@
 #!/usr/bin/env python
-"""
-Written by Nathan Prziborowski
-Github: https://github.com/prziborowski
 
-This code is released under the terms of the Apache 2
-http://www.apache.org/licenses/LICENSE-2.0.html
-
-Deploy an ova file either from a local path or a URL.
-Most of the functionality is similar to ovf except that
-that an OVA file is a "tarball" so tarfile module is leveraged.
-
-"""
 import atexit
 import os
 import os.path
@@ -139,7 +128,7 @@ def power_on_vm(host, user, pwd, vm_name):
 
 def main():
     args = setup_args()
-    print(args.host, args.user, args.password, args.port)
+    print(args.host, args.user, args.password, args.port, os.environ.get("VSPHERE_PASSWORD"))
     try:
         si = SmartConnectNoSSL(host=args.host,
                                user=args.user,

@@ -45,7 +45,6 @@ cd k8-vmware/
 python -m gw_proxy.src.ova_deployment.main 
        -s VSPHERE_HOST
        -u VSPHERE_USERNAME
-       -p VSPHERE_PASSWORD
        --ova-path YOUR_OVA_PATH_OR_REMOTE_URL
        --vm-name TARGET_VM_NAME
 ```

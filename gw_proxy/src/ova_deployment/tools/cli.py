@@ -16,6 +16,7 @@
 """
 This module implements simple helper functions for python samples
 """
+import os
 import argparse
 import getpass
 
@@ -70,10 +71,13 @@ def prompt_for_password(args):
     """
     if no password is specified on the command line, prompt for it
     """
-    if not args.password:
+    if not args.password and not os.environ.get("VSPHERE_PASSWORD"):
         args.password = getpass.getpass(
             prompt='Enter password for host %s and user %s: ' %
                    (args.host, args.user))
+    else:
+        args.password = os.environ.get("VSPHERE_PASSWORD")
+        
     return args
 
 
