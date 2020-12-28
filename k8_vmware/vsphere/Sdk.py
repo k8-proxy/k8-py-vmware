@@ -21,7 +21,7 @@ class Sdk:
                                     # todo: check for side effects
 
     def __init__(self):
-        pass
+        self.login_exception = None
 
     # helper methods
     def unverified_ssl_context(self):
@@ -75,13 +75,15 @@ class Sdk:
 
     def login(self, host=None, user_id=None, password=None, force_reload=False):
         try:
+            self.login_exception = None
             if (user_id and password):
                 config = Config()
                 config.vsphere_set_server_details(host=host, username=user_id, password=password)
                 force_reload=True
             self.service_instance(force_reload=force_reload)
             return True
-        except:
+        except Exception as exception:
+            self.login_exception = exception
             return False
 
     # note: give the current maturity of this API this method doesn't have a lot of uses
@@ -105,7 +107,7 @@ class Sdk:
                 atexit.register(Disconnect, self.service_instance)
         except Exception as exception:
             if(exception._wsdlName == 'InvalidLogin'):
-                raise Exception(f"[vsphere][sdk] login failed for user {user}") from None
+                raise Exception(f"[vsphere][sdk] login failed for user {user} : {exception.msg}") from None
             else:
                 raise exception
 

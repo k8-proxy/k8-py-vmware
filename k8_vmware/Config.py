@@ -34,7 +34,6 @@ class Config():
     def esxi_ssh_config(self):
         return  {
                     "ssh_host": environ.get('VSPHERE_HOST'     ),
-                    "ssh_user": environ.get('VSPHERE_USERNAME' ),
+                    "ssh_user": environ.get('ESXI_SSH_USER'    ),
                     "ssh_key" : environ.get('ESXI_SSH_KEY'     ),
-
                 }

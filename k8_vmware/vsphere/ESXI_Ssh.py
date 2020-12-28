@@ -50,42 +50,5 @@ class ESXI_Ssh:
 
     # helper methods: esxcli
 
-    def esxcli(self, cli_command, **kwargs):
-        for key in kwargs:
-            value = kwargs[key]
-            if value:
-                cli_command += f' -{key}="{value}"'
-        return self.exec("esxcli " + cli_command)
 
-    # formatters available: xml, csv, keyvalue, python, json , html, table , simple ("tree" doesn't seem to be avaible in the current test server)
-    def esxcli_format_output(self, formatter, cli_command, **kwargs):
-        return self.esxcli(f"--debug --formatter={formatter} {cli_command}", **kwargs)
-
-    def esxcli_date(self, cli_command):
-        date_time_str = self.esxcli(cli_command)
-        return datetime.strptime(date_time_str, '%Y-%m-%dT%H:%M:%S')            # convert string with date to an actual datetime object
-
-    @index_by
-    @group_by
-    def esxcli_json(self, cli_command, **kwargs):
-        json_data = self.esxcli_format_output("json",  cli_command, **kwargs)
-        return json.loads(json_data)
-
-    # since we already have the json formatter, there doesn't seem to be a good case for also getting data in csv
-
-    #def esxcli_output_csv(self, cli_command):
-    #    csv_data = self.esxcli("--formatter=csv " + cli_command)
-
-    # helper methods: esxcli commands  (see descriptions at https://www.altaro.com/vmware/top-20-esxcli-commands/)
-
-    def esxcli_system_account_create        (self, user_id, password, description): return self.esxcli     ("system account add"          , d=description , i=user_id, p=password, c=password)
-    def esxcli_system_account_list          (self, **kwars                       ): return self.esxcli_json("system account list"         , **kwars)
-    def esxcli_system_account_set           (self, user_id, password, description): return self.esxcli     ("system account set"          , d=description , i=user_id, p=password, c=password)
-    def esxcli_system_account_remove        (self, user_id                       ): return self.esxcli     ("system account remove "      , i=user_id)
-    def esxcli_system_hostname_get          (self, **kwars                       ): return self.esxcli_json("system hostname get"         , **kwars)
-    def esxcli_system_permission_list       (self, **kwars                       ): return self.esxcli_json("system permission list"      , **kwars)
-    def esxcli_system_permission_set        (self, user_id, role                 ): return self.esxcli     ("system permission set"       , i=user_id, r=role)
-    def esxcli_system_permission_unset      (self, user_id                       ): return self.esxcli     ("system permission unset"     , i=user_id        )
-    def esxcli_system_stats_installtime_get (self, **kwars                       ): return self.esxcli_date("system stats installtime get", **kwars)
-    def esxcli_system_version_get           (self, **kwars                       ): return self.esxcli_json("system version get"          , **kwars)
 
