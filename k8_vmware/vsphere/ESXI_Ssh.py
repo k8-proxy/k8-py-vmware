@@ -46,7 +46,6 @@ class ESXI_Ssh:
         return Config().esxi_ssh_config()
 
     # helper methods: Linux (todo: get correct version)
-    def pwd  (self): return self.exec('pwd')   # not sure how useful this one is
     def uname(self): return self.exec('uname')
 
     # helper methods: esxcli
@@ -54,7 +53,8 @@ class ESXI_Ssh:
     def esxcli(self, cli_command, **kwargs):
         for key in kwargs:
             value = kwargs[key]
-            cli_command += f' -{key}={value}'
+            if value:
+                cli_command += f' -{key}="{value}"'
         return self.exec("esxcli " + cli_command)
 
     # formatters available: xml, csv, keyvalue, python, json , html, table , simple ("tree" doesn't seem to be avaible in the current test server)
@@ -80,6 +80,7 @@ class ESXI_Ssh:
 
     def esxcli_system_account_create        (self, user_id, password, description): return self.esxcli     ("system account add"          , d=description , i=user_id, p=password, c=password)
     def esxcli_system_account_list          (self, **kwars                       ): return self.esxcli_json("system account list"         , **kwars)
+    def esxcli_system_account_set           (self, user_id, password, description): return self.esxcli     ("system account set"          , d=description , i=user_id, p=password, c=password)
     def esxcli_system_account_remove        (self, user_id                       ): return self.esxcli     ("system account remove "      , i=user_id)
     def esxcli_system_hostname_get          (self, **kwars                       ): return self.esxcli_json("system hostname get"         , **kwars)
     def esxcli_system_permission_list       (self, **kwars                       ): return self.esxcli_json("system permission list"      , **kwars)

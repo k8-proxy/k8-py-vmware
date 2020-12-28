@@ -38,6 +38,9 @@ class Sdk:
     def about(self):
         return self.content().about
 
+    def about_name(self):
+        return self.about().name
+
     def content(self):
         return self.service_instance().RetrieveContent()
 
@@ -70,26 +73,39 @@ class Sdk:
         if vm:
             return VM(vm)
 
-    def json_dump(self, obj_type, moid):
-        si_stub  = self.service_instance()._stub
-        template = VmomiSupport.templateOf(obj_type)
-        encoder  = VmomiSupport.VmomiJSONEncoder
-        raw_obj  = template(moid, si_stub)
-        return json.dumps(raw_obj, cls=encoder, sort_keys=True, indent=4)
+    def login(self, host=None, user_id=None, password=None, force_reload=False):
+        try:
+            if (user_id and password):
+                config = Config()
+                config.vsphere_set_server_details(host=host, username=user_id, password=password)
+                force_reload=True
+            self.service_instance(force_reload=force_reload)
+            return True
+        except:
+            return False
 
-    def service_instance(self):
+    # note: give the current maturity of this API this method doesn't have a lot of uses
+    # def json_dump(self, obj_type, moid):
+    #     si_stub  = self.service_instance()._stub
+    #     template = VmomiSupport.templateOf(obj_type)
+    #     encoder  = VmomiSupport.VmomiJSONEncoder
+    #     raw_obj  = template(moid, si_stub)
+    #     return json.dumps(raw_obj, cls=encoder, sort_keys=True, indent=4)
+
+    def service_instance(self, force_reload=False):
         server      = self.server_details()
         host        = server['host']
         user        = server['username']
         pwd         = server['password']
         ssl_context = self.unverified_ssl_context()             # todo: make this a option that is configurable (default should not be this insecure mode)
         try:
-            if (Sdk.cached_service_instance is None):
+            if (force_reload or Sdk.cached_service_instance is None):
+                Sdk.cached_service_instance = None
                 Sdk.cached_service_instance = connect.SmartConnect(host=host, user=user, pwd=pwd, sslContext=ssl_context)
                 atexit.register(Disconnect, self.service_instance)
         except Exception as exception:
             if(exception._wsdlName == 'InvalidLogin'):
-                raise Exception(f"[vsphere][sdk] login failed for user {user}")
+                raise Exception(f"[vsphere][sdk] login failed for user {user}") from None
             else:
                 raise exception
 

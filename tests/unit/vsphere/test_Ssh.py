@@ -5,6 +5,8 @@ from osbot_utils.utils.Misc import random_string
 from pytest import skip
 
 from k8_vmware.Config import Config
+from k8_vmware.helpers.Sdk_User import Sdk_User
+from k8_vmware.helpers.for_osbot_utils.Misc import random_password
 from k8_vmware.vsphere.ESXI_Ssh import ESXI_Ssh
 from k8_vmware.vsphere.Sdk import Sdk
 
@@ -46,12 +48,8 @@ class test_ESXI_Ssh(TestCase):
     def test_uname(self):
         assert self.ssh.uname() == 'VMkernel'
 
-    def test_pwd(self):
-        #result = self.ssh.pwd()
-
-        #pprint(self.ssh.exec('esxcli system version get'))
-        pprint(self.ssh.exec('esxcli system'))
-        #pprint(self.ssh.uname())
+    def test_exec(self):
+        assert 'Usage: esxcli system {cmd} [cmd options]' in self.ssh.exec('esxcli system') # you can also use this to see the commands avaiable in the `esxcli system` namespace
 
     # helper methods: esxcli
 
@@ -62,8 +60,9 @@ class test_ESXI_Ssh(TestCase):
         assert set(self.ssh.esxcli_json('network ip dns server list')) == {'DNSServers'}
 
     def test_esxcli_system_account_create(self):
+        sdk         = Sdk()
         user_id     = f"user_{random_string()}"
-        password    = f"pwd_{random_string()}"
+        password    = random_password()
         role        = 'Admin'
         description = f"description_{random_string()}"
 
@@ -71,19 +70,27 @@ class test_ESXI_Ssh(TestCase):
         assert self.ssh.esxcli_system_account_create(user_id, password, description) == ''
         assert self.ssh.esxcli_system_account_create(user_id, password, description) == f"The specified key, name, or identifier '{user_id}' already exists."
 
+        # check user details
+        user = self.ssh.esxcli_system_account_list(index_by='UserID').get(user_id)
+        assert user.get('UserID'     ) == user_id
+        assert user.get('Description') == description
 
         # make user an admin
         assert self.ssh.esxcli_system_permission_set(user_id, role) == ''
         assert user_id in self.ssh.esxcli_system_permission_list(index_by="Principal").keys()
 
-        # confirm user can login and execute commands on the server
-        config = Config()                                                                                           # get config object
-        server_details = config.vsphere_server_details()                                                            # store original values
-        config.vsphere_set_server_details(username=user_id, password=password)                                      # set values with newly created temp account
-        assert Sdk().about_name() == 'VMware ESXi'                                                                  # confirms we are able to login and make calls to the SOAP API
-        config.vsphere_set_server_details(username=server_details['username'], password=server_details['password']) # reset the server details to the original values
-        Sdk.cached_service_instance = None                                                                          # remove cache
-        assert Sdk().about_name() == 'VMware ESXi'                                                                  # confirm all is good
+        with Sdk_User(user_id=user_id, password=password):                                                     # confirm user can login and execute commands on the server
+            assert sdk.about_name() == 'VMware ESXi'                                                          # confirms we are able to login and make calls to the SOAP API
+
+        assert sdk.about_name() == 'VMware ESXi'                                                              # confirm all is good
+
+
+        # change user details
+        # new_description = f"description_{random_string()}"
+        # new_password    = random_password()
+        # pprint( self.ssh.esxcli_system_account_set(user_id, new_password, new_description))
+        # user = self.ssh.esxcli_system_account_list(index_by='UserID').get(user_id)
+        # pprint(user)
 
         # remove user from Admin group
         assert self.ssh.esxcli_system_permission_unset(user_id) == ''                                               # remove user role

@@ -4,6 +4,7 @@ import pytest
 from osbot_utils.utils.Misc import random_string
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
+from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
 
 
 class test_VM_Keystroke(TestCase):
@@ -16,13 +17,15 @@ class test_VM_Keystroke(TestCase):
         if self.vm is None:
             pytest.skip(f"target server did not have vm {self.vm_name}")
 
-    # def test__init__(self):
-    #     assert self.vm.name() == test_VM_Keystroke.vm_name
+    def test__init__(self):
+        assert self.vm.name() == test_VM_Keystroke.vm_name
 
     def test_send_text(self):
         # todo: find way to confirm that key was actually sent
         #       at the momente we are using a screenshot (which is a pretty cool workflow)
-        #with VM_Screenshot(self.vm):
+        #       One solution is to use https://www.pyimagesearch.com/2017/07/10/using-tesseract-ocr-python/
+        target_file       = '/tmp/vm_screenshot_2.png'
+        with VM_Screenshot(self.vm, target_file=target_file):
             self.vm_keystroke.send_text('___')
 
     def test_send_char(self):

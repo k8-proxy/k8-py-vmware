@@ -5,13 +5,19 @@ from k8_vmware.vsphere.Task import Task
 
 
 class VM_Screenshot:
+    """
+    Helper class to take a screnshot of an VM
+
+    tip: set target_file to a known location (like '/tmp/vm_screeshot.png') and keep it open in the IDE (which should auto refresh it)
+    """
     def __init__(self, vm, target_file=None, ds_delete_on_download=True):
         self.vm                    = vm
         self.path_screenshot       = target_file
         self.ds_screenshot         = None
         self.ds_delete_on_download = ds_delete_on_download
+        self.target_file           = target_file
 
-    def __enter__(self, target_file = '/tmp/vm_screeshot.png'):
+    def __enter__(self):
         self.path_screenshot = target_file
         return self.vm
 
