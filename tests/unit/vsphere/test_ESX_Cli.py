@@ -56,7 +56,7 @@ class test_ESX_Cli(TestCase):
         ssh_host = self.esx_cli.esxi_ssh.ssh_config().get("ssh_host")
         ssh_ip   = socket.gethostbyname(ssh_host)
         data = self.esx_cli.network_ip_interface_ipv4_get(index_by='IPv4Address')
-        
+
         assert ssh_ip in set(data)
         assert set(data[ssh_ip]) == {'AddressType', 'DHCPDNS', 'Gateway',
                                      'IPv4Address', 'IPv4Broadcast', 'IPv4Netmask', 'Name'}

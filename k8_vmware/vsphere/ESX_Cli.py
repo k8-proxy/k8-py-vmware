@@ -3,13 +3,13 @@ from datetime import datetime
 
 from osbot_utils.decorators.Lists import index_by, group_by
 
-from k8_vmware.vsphere.ESXI_Ssh import ESXI_Ssh
+from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
 
 
 class ESX_Cli():
 
     def __init__(self):
-        self.esxi_ssh = ESXI_Ssh()
+        self.esxi_ssh = ESXi_Ssh()
 
     def exec(self, cli_command, **kwargs):
         for key in kwargs:

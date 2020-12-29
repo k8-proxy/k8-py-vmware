@@ -13,3 +13,6 @@ def random_password(length=24, prefix=''):
     for item in items:
         password = password.replace(item, '_')
     return password
+
+def split_lines(text):
+    return text.split('\n')

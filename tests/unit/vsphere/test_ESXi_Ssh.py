@@ -7,14 +7,14 @@ from pytest import skip
 from k8_vmware.Config import Config
 from k8_vmware.helpers.Sdk_User import Sdk_User
 from k8_vmware.helpers.for_osbot_utils.Misc import random_password
-from k8_vmware.vsphere.ESXI_Ssh import ESXI_Ssh
+from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
 from k8_vmware.vsphere.Sdk import Sdk
 
 
-class test_ESXI_Ssh(TestCase):
+class test_ESXi_Ssh(TestCase):
 
     def setUp(self) -> None:
-        self.ssh        = ESXI_Ssh()
+        self.ssh        = ESXi_Ssh()
         self.ssh_config = self.ssh.ssh_config()
         self.ssh_user   = self.ssh_config.get('ssh_user')
         self.ssh_key    = self.ssh_config.get('ssh_key')
