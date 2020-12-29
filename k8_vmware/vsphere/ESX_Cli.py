@@ -39,13 +39,19 @@ class ESX_Cli():
 
     # helper methods: esxcli commands  (see descriptions at https://www.altaro.com/vmware/top-20-esxcli-commands/)
 
-    def system_account_create        (self, user_id, password, description): return self.exec            ("system account add"           , d=description , i=user_id, p=password, c=password)
-    def system_account_list          (self, **kwars                       ): return self.exec_return_json("system account list"          , **kwars           )
-    def system_account_set           (self, user_id, password, description): return self.exec            ("system account set"           , d=description , i=user_id, p=password, c=password)
-    def system_account_remove        (self, user_id                       ): return self.exec            ("system account remove"        , i=user_id         )
-    def system_hostname_get          (self, **kwars                       ): return self.exec_return_json("system hostname get"          , **kwars           )
-    def system_permission_list       (self, **kwars                       ): return self.exec_return_json("system permission list"       , **kwars           )
-    def system_permission_set        (self, user_id, role                 ): return self.exec            ("system permission set"        , i=user_id, r=role )
-    def system_permission_unset      (self, user_id                       ): return self.exec            ("system permission unset"      , i=user_id         )
-    def system_stats_installtime_get (self, **kwars                       ): return self.exec_return_date("system stats installtime get" , **kwars           )
-    def system_version_get           (self, **kwars                       ): return self.exec_return_json("system version get"           , **kwars           )
+    def network_firewall_get          (self, **kwars                       ): return self.exec_return_json("network firewall get"         , **kwars           )
+    def network_firewall_ruleset_list (self, **kwars                       ): return self.exec_return_json("network firewall ruleset list", **kwars           )
+    def network_ip_interface_ipv4_get (self, **kwars                       ): return self.exec_return_json("network ip interface ipv4 get", **kwars           )
+
+    def system_account_create         (self, user_id, password, description): return self.exec            ("system account add"           , d=description , i=user_id, p=password, c=password)
+    def system_account_list           (self, **kwars                       ): return self.exec_return_json("system account list"          , **kwars           )
+    def system_account_set            (self, user_id, password, description): return self.exec            ("system account set"           , d=description , i=user_id, p=password, c=password)
+    def system_account_remove         (self, user_id                       ): return self.exec            ("system account remove"        , i=user_id         )
+    def system_hostname_get           (self, **kwars                       ): return self.exec_return_json("system hostname get"          , **kwars           )
+    def system_permission_list        (self, **kwars                       ): return self.exec_return_json("system permission list"       , **kwars           )
+    def system_permission_set         (self, user_id, role                 ): return self.exec            ("system permission set"        , i=user_id, r=role )
+    def system_permission_unset       (self, user_id                       ): return self.exec            ("system permission unset"      , i=user_id         )
+    def system_stats_installtime_get  (self, **kwars                       ): return self.exec_return_date("system stats installtime get" , **kwars           )
+    def system_version_get            (self, **kwars                       ): return self.exec_return_json("system version get"           , **kwars           )
+
+

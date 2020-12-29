@@ -30,7 +30,7 @@ class test_ESXI_Ssh(TestCase):
     def test_get_get_ssh_params(self):
         ssh_params = self.ssh.get_ssh_params('aaa')
         assert ssh_params == ['-t', '-i', environ.get('ESXI_SSH_KEY'),
-                              environ.get('VSPHERE_USERNAME') + '@' + environ.get('VSPHERE_HOST'),
+                              environ.get('ESXI_SSH_USER') + '@' + environ.get('VSPHERE_HOST'),
                               'aaa']
 
     def test_exec(self):
@@ -40,7 +40,7 @@ class test_ESXI_Ssh(TestCase):
     def test_ssh_config(self):
         config = self.ssh.ssh_config()
         assert config['ssh_host'] == environ.get('VSPHERE_HOST'    )
-        assert config['ssh_user'] == environ.get('VSPHERE_USERNAME')
+        assert config['ssh_user'] == environ.get('ESXI_SSH_USER')
         assert config['ssh_key' ] == environ.get('ESXI_SSH_KEY'    )
 
     # helper methods

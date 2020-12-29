@@ -1,3 +1,4 @@
+import socket
 from pprint import pprint
 from unittest import TestCase
 
@@ -16,19 +17,17 @@ class test_ESX_Cli(TestCase):
 
     def setUpClass(cls) -> None:
         cls.esx_cli     = ESX_Cli()
+        cls.ssh_key     = cls.esx_cli.esxi_ssh.ssh_config().get('ssh_key')
+        if cls.ssh_key is None:
+            skip("Skipping test because environment variable ssh_host is not configured")
+
         cls.user_id     = f"user_{random_string()}"
         cls.password    = random_password()
         cls.role        = 'Admin'
         cls.description = f"description_{random_string()}"
 
-        #print('****')
-        #print('user', cls.user_id)
-        #print('password', cls.password)
-
         assert cls.esx_cli.system_account_create(cls.user_id, cls.password, cls.description) == ''
         assert cls.esx_cli.system_permission_set(cls.user_id, cls.role) == ''
-        #assert cls.user_id in set(cls.esx_cli.system_account_list(index_by='UserID'))
-        #print("user created ok")
 
 
     @classmethod
@@ -45,6 +44,22 @@ class test_ESX_Cli(TestCase):
 
     def test_esxcli_json(self):
         assert set(self.esx_cli.exec_return_json('network ip dns server list')) == {'DNSServers'}
+
+    def test_network_firewall_get(self):
+        assert self.esx_cli.network_firewall_get() ==  {'DefaultAction': 'DROP', 'Enabled': True, 'Loaded': True}
+
+    def test_network_firewall_ruleset_list(self):
+        ruleset = self.esx_cli.network_firewall_ruleset_list(index_by="Name")
+        assert ruleset['httpClient'] == {'Enabled': False, 'Name': 'httpClient'}
+
+    def test_network_ip_interface_ipv4_get(self):
+        ssh_host = self.esx_cli.esxi_ssh.ssh_config().get("ssh_host")
+        ssh_ip   = socket.gethostbyname(ssh_host)
+        data = self.esx_cli.network_ip_interface_ipv4_get(index_by='IPv4Address')
+        
+        assert ssh_ip in set(data)
+        assert set(data[ssh_ip]) == {'AddressType', 'DHCPDNS', 'Gateway',
+                                     'IPv4Address', 'IPv4Broadcast', 'IPv4Netmask', 'Name'}
 
     def test_system_account_create(self):                                                                       # note: setUpClass  will create and user with the id self.user_id
         assert self.user_id in set(self.esx_cli.system_account_list(index_by='UserID'))                         # confirm user exists
