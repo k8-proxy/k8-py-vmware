@@ -54,4 +54,4 @@ class ESX_Cli():
     def system_stats_installtime_get  (self, **kwars                       ): return self.exec_return_date("system stats installtime get" , **kwars           )
     def system_version_get            (self, **kwars                       ): return self.exec_return_json("system version get"           , **kwars           )
 
-
+    #"network firewall ruleset allowedip list"

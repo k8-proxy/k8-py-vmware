@@ -1,3 +1,4 @@
+import json
 import string
 import random
 
@@ -16,3 +17,6 @@ def random_password(length=24, prefix=''):
 
 def split_lines(text):
     return text.split('\n')
+
+def json_round_trip(data):
+    return json.loads(json.dumps(data))
