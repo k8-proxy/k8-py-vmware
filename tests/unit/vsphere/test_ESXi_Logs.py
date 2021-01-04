@@ -2,6 +2,7 @@ from pprint import pprint
 from unittest import TestCase
 
 from osbot_utils.utils.Misc import split_lines
+from pytest import skip
 
 from k8_vmware.vsphere.ESXi_Logs import ESXi_Logs
 
@@ -10,6 +11,11 @@ class test_ESXi_Logs(TestCase):
 
     def setUp(self) -> None:
         self.esxi_logs = ESXi_Logs()
+        self.ssh_config = self.esxi_logs.esxi_ssh.ssh_config()
+        self.ssh_key    = self.ssh_config.get('ssh_key')
+        if self.ssh_key is None:
+            skip("Skipping test because environment variable ssh_host is not configured")
+
 
     def assert_log_size(self, function, size=10):
         assert len(split_lines(function(size))) == size
