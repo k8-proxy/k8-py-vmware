@@ -105,7 +105,6 @@ class Datastore:
         paths = []
         for file in files:
             path = f"{file['Folder_path']}/{file['FileName']}"
-            #path = path.replace(f'[{self.name}] ', "")          # remove datastore from path
             paths.append(path)
 
         return sorted(paths)

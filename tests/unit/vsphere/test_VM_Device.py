@@ -23,8 +23,10 @@ class test_VM_Device(TestCase_VM):
         assert len(self.vm_device.vm.devices()) == 10
         cdrom = self.vm_device.vm.devices_Cdroms().pop()
         assert cdrom.deviceInfo.label   == 'CD/DVD drive 1'
-        assert cdrom.deviceInfo.summary == f'ISO {iso_path}'#.replace('/',' ')
-        assert cdrom.backing.fileName   == iso_path#.replace('/',' ')
+        # the replace calls below are caused by a weird bug of a test difference between running the tests in dev (OSX) and GitHub Actions (Linux)
+        # where the deviceInfo.summary when executed locally doesn't have the '/' between the datastore name and the path
+        assert cdrom.deviceInfo.summary.replace('/',' ') == f'ISO {iso_path}'.replace('/',' ')
+        assert cdrom.backing.fileName.replace('/',' ')   == iso_path.replace('/',' ')
         self.vm_device.remove_device(cdrom)
 
     def test_cdrom_add_to_vm(self):
