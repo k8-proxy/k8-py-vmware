@@ -1,7 +1,8 @@
 from pprint import pprint
 from unittest import TestCase
 
-from k8_vmware.helpers.for_osbot_utils.Misc import split_lines
+from osbot_utils.utils.Misc import split_lines
+
 from k8_vmware.vsphere.ESXi_Logs import ESXi_Logs
 
 

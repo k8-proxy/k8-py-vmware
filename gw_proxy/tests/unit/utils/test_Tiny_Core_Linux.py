@@ -3,7 +3,6 @@ from unittest import TestCase
 from osbot_utils.utils.Files import file_exists
 
 from gw_proxy.src.utils.Tiny_Core_Linux import Tiny_Core_Linux
-from k8_vmware.helpers.View_Soap_Calls import View_Soap_Calls
 from k8_vmware.helpers.for_osbot_utils.Wrap_Method import Wrap_Method
 
 

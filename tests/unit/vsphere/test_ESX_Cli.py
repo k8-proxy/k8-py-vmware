@@ -3,11 +3,10 @@ from pprint import pprint
 from unittest import TestCase
 
 import pytest
-from osbot_utils.utils.Misc import random_string
+from osbot_utils.utils.Misc import random_string, random_password
 from pytest import skip
 
 from k8_vmware.helpers.Sdk_User import Sdk_User
-from k8_vmware.helpers.for_osbot_utils.Misc import random_password
 from k8_vmware.vsphere.ESX_Cli import ESX_Cli
 from k8_vmware.vsphere.Sdk import Sdk
 

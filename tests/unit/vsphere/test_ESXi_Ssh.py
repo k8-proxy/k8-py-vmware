@@ -1,14 +1,7 @@
 from os import environ
-from pprint import pprint
 from unittest import TestCase
-from osbot_utils.utils.Misc import random_string
 from pytest import skip
-
-from k8_vmware.Config import Config
-from k8_vmware.helpers.Sdk_User import Sdk_User
-from k8_vmware.helpers.for_osbot_utils.Misc import random_password
 from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
-from k8_vmware.vsphere.Sdk import Sdk
 
 
 class test_ESXi_Ssh(TestCase):
@@ -23,7 +16,6 @@ class test_ESXi_Ssh(TestCase):
 
     # base methods
     def test_exec_ssh_command(self):
-        assert self.ssh.exec_ssh_command(       ) == {'error': '', 'output': 'VMkernel\n', 'status': True}
         assert self.ssh.exec_ssh_command('uname') == {'error': '', 'output': 'VMkernel\n', 'status': True}
         assert self.ssh.exec_ssh_command('aaaa' ) == {'error': 'sh: aaaa: not found\n', 'output': '', 'status': False}
 

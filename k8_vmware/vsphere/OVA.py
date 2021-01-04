@@ -14,11 +14,6 @@ import pyVmomi
 from osbot_utils.utils.Files import file_exists
 from six.moves.urllib.request import Request, urlopen
 
-#from tools import cli
-
-from pyVim.connect import SmartConnectNoSSL, Disconnect
-from pyVmomi import vim, vmodl
-
 from k8_vmware.vsphere.Sdk import Sdk
 
 
@@ -136,13 +131,13 @@ class OvfHandler(object):
             lease.Complete()
             print("Finished deploy successfully.")
             return 0
-        except vmodl.MethodFault as e:
+        except pyVmomi.vmodl.MethodFault as e:
             print("Hit an error in upload: %s" % e)
             lease.Abort(e)
         except Exception as e:
             print("Lease: %s" % lease.info)
             print("Hit an error in upload: %s" % e)
-            lease.Abort(vmodl.fault.SystemError(reason=str(e)))
+            lease.Abort(pyVmomi.vmodl.fault.SystemError(reason=str(e)))
             raise
         return 1
 
@@ -177,8 +172,8 @@ class OvfHandler(object):
         try:
             prog = self.handle.progress()
             self.lease.Progress(prog)
-            if self.lease.state not in [vim.HttpNfcLease.State.done,
-                                        vim.HttpNfcLease.State.error]:
+            if self.lease.state not in [pyVmomi.vim.HttpNfcLease.State.done,
+                                        pyVmomi.vim.HttpNfcLease.State.error]:
                 self.start_timer()
             sys.stderr.write("Progress: %d%%\r" % prog)
         except:  # Any exception means we should stop updating progress.

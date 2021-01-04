@@ -1,9 +1,10 @@
 import json
 from pprint import pprint
 
-from osbot_utils.decorators.Lists import group_by, index_by
+from osbot_utils.decorators.lists.group_by import group_by
+from osbot_utils.decorators.lists.index_by import index_by
+from osbot_utils.utils.Json import json_round_trip
 
-from k8_vmware.helpers.for_osbot_utils.Misc import json_round_trip
 from k8_vmware.vsphere.Sdk import Sdk
 
 

@@ -43,7 +43,7 @@ class test_Datastore_File(TestCase):
         confirm_values_are_set_correctly(""                 , ""                      , ""       )  # when ds_name is not set
 
     def test_upload__download(self):
-        local_file = temp_file(file_contents="This is a local file - " + random_string())   # create local temp file
+        local_file = temp_file(contents="This is a local file - " + random_string())   # create local temp file
 
         self.datastore_file.upload(local_file)                                              # upload file to server
         tmp_file = self.datastore_file.download()                                           # download file from server

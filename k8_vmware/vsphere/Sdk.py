@@ -1,6 +1,7 @@
 import atexit
 import json
 import  ssl
+from subprocess import PIPE, Popen
 
 import  pyVmomi
 import  urllib3
@@ -115,11 +116,71 @@ class Sdk:
 
     # todo: improve this by: allowed to set how many to receive and allowing for further searches than the 'recent tasks'
     #       at the moment this can take 3 to 5 seconds to execute (since every all items are being fetched)
+#     def tasks_recent_experiment(self, entity):
+#         # below worked
+#         from osbot_utils.utils.Process import exec_process
+#         result = exec_process("ssh", ['-t', 'root@esxi04.glasswall-icap.com', 'ls','/var/log'])
+#
+#         from pprint import pprint
+#         pprint(result)
+#
+#         return
+#         content = self.content()
+#         task_manager = content.taskManager
+#         object_type =  pyVmomi.vim.Task
+#         target_objects = task_manager.recentTask
+#         #properties_names = [ 'dynamicType', 'dynamicProperty', 'key', 'task','description', 'name', 'descriptionId', 'entity', 'entityName', 'locked', 'state', 'cancelled', 'cancelable', 'error', 'result', 'progress', 'reason', 'queueTime', 'startTime', 'completeTime', 'eventChainId', 'changeTag', 'parentTaskKey', 'rootTaskKey', 'activationId']
+#         properties_names = ['all']
+#         #_GetPropertyList()
+#         #target_objects = []
+#         #for task in task_manager.recentTask:
+#         #    return [property.name for property in task.info._GetPropertyList()]
+#         #return
+#         #properties_names = self.object_properties_names(object_type)
+#         #properties_names.remove('type')
+#         #return properties_names
+#
+#         #taskManager = content.taskManager
+#         # properties_names.remove('activationId')
+#         # properties_names.remove('rootTaskKey')
+#         # properties_names.remove('parentTaskKey')
+#         return self.get_objects_properties(object_type, target_objects, properties_names)
+#
+# #        task_filter_spec_by_entity = pyVmomi.vim.TaskFilterSpec.ByEntity(entity=entity)
+# #        filterspec = pyVmomi.vim.TaskFilterSpec(entity=task_filter_spec_by_entity)
+# #        #return task_filter_spec_by_entity
+# #        collector = taskManager.CreateCollectorForTasks(filterspec)
+#
+# #        filterspec = pyVmomi.vim.TaskFilterSpec(entity=pyVmomi.vim.TaskFilterSpec.ByEntity(entity=entity, recursion="children"))
+# #        collector = taskManager.CreateCollectorForTasks(filterspec)
+#         #byEntity = pyVmomi.vim.event.TaskFilterSpec.ByEntity(entity=entity)
+# #        ids = []
+# #        filterSpec = pyVmomi.vim.event.TaskFilterSpec(entity=byEntity, eventTypeId=ids)
+# #        eventManager = self.content().taskManager
+# #       events = eventManager.QueryEvent(filterSpec)
+#
+#         # import datetime
+#         # time = datetime.datetime.now()
+#         # time2 = time - datetime.timedelta(hours=1)
+#         #
+#         # tfs = pyVmomi.vim.TaskFilterSpec(entity=byEntity, userName=None, alarm=None, scheduledTask=None)
+#         #
+#         # tc = self.content().taskManager.CreateCollectorForTasks(tfs)
+#         # tlist = tc.ReadNextTasks(maxCount=100)
+#
+#         taskManager = self.content().taskManager
+#         pyVmomi.vim.TaskFilterSpec()
+#         #tasks = taskManager.CreateCollectorForTasks(pyVmomi.vim.TaskFilterSpec())
+#         #tasks.ResetCollector()
+#         #alltasks = tasks.ReadNextTasks(999)
+#         #yesterday = datetime.now() - timedelta(1)
+#         return "collector"
+#         #return self.get_objects_properties(object_type, target_objects, properties_names)
+
     def tasks_recent(self):
-        content = self.content()
-        task_manager = content.taskManager
         tasks = []
-        for task in task_manager.recentTask:                # will make a REST call per itme
+        task_manager = self.content().taskManager
+        for task in task_manager.recentTask:                # will make a REST call per task
             info = task.info
             task_data = {
                 "DescriptionId" : str(info.descriptionId),
@@ -153,10 +214,13 @@ class Sdk:
                 folders.append(datacenter.vmFolder)             # todo: add support for nested folders (see code at https://github.com/vmware/pyvmomi/blob/master/sample/getallvms.py#L58 )
         return folders
 
-    def get_object(self, vim_type, name):
+    def get_object(self, vim_type, name=None):
         content = self.content()
+
         container = content.viewManager.CreateContainerView(content.rootFolder, [vim_type], True)
         for object in container.view:
+            if name is None:                            # if no name is provided return the first one
+                return object
             if object.name == name:
                 return object
 
@@ -164,14 +228,35 @@ class Sdk:
     def get_object_network        (self, name): return self.get_object(pyVmomi.vim.Network       , name)
     def get_object_virtual_machine(self, name): return self.get_object(pyVmomi.vim.VirtualMachine, name)
 
-    def get_objects(self, vim_type=None):
-        if vim_type:
-            type_names = [vim_type]
-        else:
-            type_names = []
-        content = self.content()
-        container = content.viewManager.CreateContainerView(content.rootFolder, type_names , True)
+    def get_objects(self, objects_types=None):
+        if objects_types is not list:
+            if objects_types is not None:
+                objects_types = [objects_types]
+            else:
+                objects_types = []
+        target = self.content().rootFolder
+        return self.get_objects_from(target, objects_types)
+
+    def get_objects_from(self, target, objects_types=None):
+        container = self.content().viewManager.CreateContainerView(target, objects_types, True)
         return container.view
+
+    def get_objects_properties(self, object_type, target_objects, properties_names):
+        property_filter_spec = self.object_filter_spec(object_type, target_objects, properties_names)
+        return self.get_objects_properties_using_filter_spec(property_filter_spec)
+
+    def get_objects_properties_using_filter_spec(self, property_filter_spec):
+        property_collector = self.property_collector()
+        retrieve_options   = pyVmomi.vmodl.query.PropertyCollector.RetrieveOptions()
+        results            = property_collector.RetrievePropertiesEx([property_filter_spec], retrieve_options)
+        objects_properties = {}
+        for object in results.objects:
+            object_id         = f"vim.{object.obj._wsdlName}:{object.obj._moId}"        # use the id of the object as the key (since we already have the object.obj value from the query)
+            object_properties = {}
+            for property in object.propSet:
+                object_properties[property.name] = property.val
+            objects_properties[object_id] = object_properties
+        return objects_properties
 
     def get_objects_Compute_Resources(self): return self.get_objects(pyVmomi.vim.ComputeResource)
     def get_objects_Datacenters      (self): return self.get_objects(pyVmomi.vim.Datacenter     )
@@ -184,7 +269,37 @@ class Sdk:
     def get_objects_StoragePods      (self): return self.get_objects(pyVmomi.vim.StoragePod     )
     def get_objects_Virtual_Machines (self): return self.get_objects(pyVmomi.vim.VirtualMachine )
 
+    def object_filter_spec(self, object_type, target_objects, properties):
+        objects_specs = []
+        for object in target_objects:
+            object_spec = pyVmomi.vmodl.query.PropertyCollector.ObjectSpec(obj=object)
+            objects_specs.append(object_spec)
 
+        propSet = pyVmomi.vmodl.query.PropertyCollector.PropertySpec(all=False)
+        propSet.type = object_type
+        propSet.pathSet = properties
+
+        filterSpec = pyVmomi.vmodl.query.PropertyCollector.FilterSpec()
+        filterSpec.objectSet = objects_specs
+        filterSpec.propSet = [propSet]
+        return filterSpec
+
+    def object_methods_names(self, object_type):
+        object = self.get_object(object_type)
+        if object:
+            methods_list = object._GetMethodList()
+            return [method.name for method in methods_list]
+
+            #return list(object._methodInfo.keys()) #_GetMethodList
+
+    def object_properties_names(self, object_type):
+        object = self.get_object(object_type)
+        if object:
+            properties_list = object._GetPropertyList()
+            return [property.name for property in properties_list]
+
+    def property_collector(self):
+        return self.content().propertyCollector
 
     def resource_pool(self):
         hosts =  self.datacenter().hostFolder.childEntity

@@ -1,5 +1,3 @@
-from random import randint
-
 import pyVmomi
 from osbot_utils.utils.Misc import random_string
 

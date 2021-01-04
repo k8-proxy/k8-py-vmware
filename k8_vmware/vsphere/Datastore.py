@@ -1,5 +1,7 @@
 import pyVmomi
-from osbot_utils.decorators.Lists import index_by, group_by
+from osbot_utils.decorators.lists.group_by import group_by
+from osbot_utils.decorators.lists.index_by import index_by
+
 from k8_vmware.vsphere.Sdk  import Sdk
 from k8_vmware.vsphere.Task import Task
 

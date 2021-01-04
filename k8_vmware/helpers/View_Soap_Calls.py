@@ -25,9 +25,8 @@
 
 from os import environ
 
+from osbot_utils.testing.Hook_Method import Hook_Method
 from pyVmomi import SoapAdapter
-
-from k8_vmware.helpers.for_osbot_utils.Wrap_Method import Wrap_Method
 
 # todo: find why this method doesn't not show as covered in coveralls (https://coveralls.io/builds/35484623/source?filename=k8_vmware/helpers/View_Soap_Calls.py)
 #       but it shows ok when running in PyCharm (with Code Coverage enabled)
@@ -81,7 +80,7 @@ class View_Soap_Calls:
         return self
 
     def wrap_target_method(self):
-        self.wrap_method = Wrap_Method(self.target_module, self.target_method)
+        self.wrap_method = Hook_Method(self.target_module, self.target_method)
         self.wrap_method.add_on_before_call(before_call)
         self.wrap_method.wrap()
 
