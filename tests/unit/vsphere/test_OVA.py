@@ -18,12 +18,7 @@ import wget
 class test_OVA(TestCase):
     def setUp(self) -> None:
         self.ova = OVA()
-        #self.vm_name = 'photon'
-        #self.vm = self.ova.sdk.vm(self.vm_name)
-
-        #if self.vm is None:
-        #    pytest.skip(f"target server did not have vm {self.vm_name}")
-
+        
     def test__init__(self):
         assert self.ova.sdk is not None
 
