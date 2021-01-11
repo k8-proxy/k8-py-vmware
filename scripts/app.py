@@ -31,6 +31,8 @@ for vm_o in vms_o:
     state=summary.runtime.powerState
     notes  = summary.config.annotation
     create_date=vm_o.config.createDate
+    if create_date < datetime(2000,1,1):
+        continue
     if rm_note.lower() in notes.lower() or (create_date < (now - timedelta(days=expire_days_no)) and dont_rm_note.lower() not in notes.lower()):
       if state == 'poweredOn':
         vm.task().power_off()  
