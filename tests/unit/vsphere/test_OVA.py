@@ -127,3 +127,7 @@ class test_web_handle(TestCase):
 
         r = self.webhandle.seek(offset=1,whence=2)
         assert r is not None
+
+    def tearDown(self) -> None:
+        if os.path.exists('./test.ova'):
+            os.remove('./test.ova')
