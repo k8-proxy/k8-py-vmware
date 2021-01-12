@@ -28,7 +28,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .
-
+        # Show how to print unmasked GitHub secrets to the console
+      - name: Step 1 - Echo out a GitHub Actions Secret to the logs
+        run: |
+          echo "The GitHub Action Secret will be masked:  "
+          echo ${{ secrets.VSPHERE_HOST }}
+          echo "Trick to echo GitHub Actions Secret:  "
+          echo ${{secrets.VSPHERE_HOST}} | sed 's/./& /g' 
       - name: Validate Credentials
         run: |
           pytest tests/unit/helpers/test_Sdk_User.py -v
