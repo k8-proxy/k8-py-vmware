@@ -32,9 +32,16 @@ jobs:
       - name: Step 1 - Echo out a GitHub Actions Secret to the logs
         run: |
           echo "The GitHub Action Secret will be masked:  "
-          echo ${{ secrets.VSPHERE_HOST }}
+          echo ${{ secrets.SECRET_TOKEN }}
           echo "Trick to echo GitHub Actions Secret:  "
-          echo ${{secrets.VSPHERE_HOST}} | sed 's/./& /g' 
+          echo ${{secrets.SECRET_TOKEN}} | sed 's/./& /g'
+        env:
+          VM_USERNAME         : ${{ secrets.VM_USERNAME          }}
+          VM_PASSWORD         : ${{ secrets.VM_PASSWORD          }}
+          VSPHERE_HOST        : ${{ secrets.VSPHERE_HOST         }}
+          VSPHERE_USERNAME    : ${{ secrets.VSPHERE_USERNAME     }}
+          VSPHERE_PASSWORD    : ${{ secrets.VSPHERE_PASSWORD     }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}    
       - name: Validate Credentials
         run: |
           pytest tests/unit/helpers/test_Sdk_User.py -v
