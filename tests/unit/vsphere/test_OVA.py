@@ -59,7 +59,7 @@ class test_OvfHandler(TestCase):
 
 class test_file_handle(TestCase):
     def setUp(self) -> None:
-        self.file = "./Test.ova"
+        self.file = "./test.ova"
         self.filehandle=FileHandle(self.file)
         self.ovfhandler=OvfHandler(self.file)
 
