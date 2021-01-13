@@ -36,4 +36,10 @@ Configure the environment variables, by renaming the `.env.example` file top `.e
 
 ```export VSPHERE_HOST={IP of ESXi server}
 export VSPHERE_USERNAME={username}
-export VSPHERE_PASSWORD={password}``` 
+export VSPHERE_PASSWORD={password}
+``` 
+
+Run Tests
+```
+pytest -v --durations=0 --cov=k8_vmware tests
+```
