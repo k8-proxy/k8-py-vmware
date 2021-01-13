@@ -17,5 +17,6 @@ class test_Config(TestCase):
 
     def test_vm_account(self):
         vm_account = self.config.vm_account()
+        print(vm_account)
         assert vm_account.get('username') is not None
         assert vm_account.get('password') is not None

@@ -30,7 +30,7 @@ jobs:
           pip install -e .
       - name: Validate Credentials
         run: |
-          pytest tests/unit/helpers/test_Sdk_User.py -v
+          pytest tests/integration/helpers/test_Sdk_User.py -v
       - name: Run tests with pytest
         run: |
           pytest -v --durations=0 --cov=k8_vmware tests
