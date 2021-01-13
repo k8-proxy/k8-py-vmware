@@ -24,10 +24,8 @@ class OVA:
 
     def upload_ova(self, ova_path):
         sdk = self.sdk
-        assert file_exists(ova_path)
-
         ovf_handle = OvfHandler(ova_path)
-
+        
         ovfManager = sdk.content().ovfManager
         rp = sdk.resource_pool()
         ds = sdk.datastore()
