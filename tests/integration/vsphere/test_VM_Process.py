@@ -23,7 +23,7 @@ class test_VM_Process(TestCase):
         print(response)
 
     def test_set_vm_account(self):
-        self.vm_process.set_vm_account(environ.get("root"), environ.get("vmwareesxi"))
+        self.vm_process.set_vm_account("admin", environ.get("password"))
 
     def test_start_process_return_stdout(self):
         program_path = "/sbin/ip"
