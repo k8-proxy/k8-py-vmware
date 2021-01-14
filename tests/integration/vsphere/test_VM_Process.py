@@ -39,20 +39,20 @@ class test_VM_Process(TestCase):
     def setUp(self) -> None:
         self.ova = OVA()
         self.sdk=Sdk()
-        if not os.path.exists('./test.ova'):
-            url = "https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
-            wget.download(url, './test.ova')
-        ova_path = "./test.ova"
-        self.ova.upload_ova(ova_path)
-
-
         self.vm = self.sdk.find_by_name("Photon OS")
-        print(self.vm)
-        self.vm.task().power_on()
 
         photon_username = 'root'
         photon_default_password = 'changeme'
         photon_new_password = 'vmwareesxi'
+
+        if not self.vm:
+            if not os.path.exists('./test.ova'):
+                url = "https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
+                wget.download(url, './test.ova')
+            ova_path = "./test.ova"
+            self.ova.upload_ova(ova_path)
+            print(self.vm)
+            self.vm.task().power_on()
 
         with VM_Screenshot(self.vm) as vm:
             # note: need to wait a big before commands to allow the UI to catch up
