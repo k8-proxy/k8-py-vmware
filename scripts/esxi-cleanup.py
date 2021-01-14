@@ -13,14 +13,11 @@ import sys
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM import VM
 
-class AutoDeleteEsxi:
-	def __init__(self):
-		env_path= PurePath(__file__).parent / 'script.env'
-		load_dotenv(dotenv_path=env_path)
-		load_dotenv()
-		self.rm_note=environ.get('rm_note')
-		self.dont_rm_note=environ.get('dont_rm_note')
-		self.expire_days_no=environ.get('expire_days_no','')
+class AutoDeleteEsxiJob:
+	def __init__(self,rm_note,dont_rm_note,expire_days_no):
+		self.rm_note=rm_note
+		self.dont_rm_note=dont_rm_note
+		self.expire_days_no=expire_days_no
 
 	def auto_delete(self):
 
@@ -59,8 +56,15 @@ class AutoDeleteEsxi:
 		    print("No VM was removed!")
 
 def main():
-	auto_delete_esxi=AutoDeleteEsxi()
+	env_path= PurePath(__file__).parent / 'script.env'
+	load_dotenv(dotenv_path=env_path)
+	load_dotenv()
+	rm_note=environ.get('rm_note')
+	dont_rm_note=environ.get('dont_rm_note')
+	expire_days_no=environ.get('expire_days_no','')
+	auto_delete_esxi=AutoDeleteEsxiJob(rm_note,dont_rm_note,expire_days_no)
 	auto_delete_esxi.auto_delete()
+
 
 
 if __name__ == '__main__':
