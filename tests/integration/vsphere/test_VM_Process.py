@@ -91,6 +91,7 @@ class test_VM_Process(TestCase):
         assert 'eth0: <BROADCAST,MULTICAST,UP,LOWER_UP>' in result
 
     def tearDown(self) -> None:
-        self.vm.task().delete()
+        if self.vm:
+            self.vm.task().delete()
         if os.path.exists('./test.ova'):
             os.remove('./test.ova')
