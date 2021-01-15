@@ -6,7 +6,7 @@ from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Keystroke import VM_Keystroke
 from k8_vmware.vsphere.VM_Screenshot import VM_Screenshot
 
-
+# todo this test needs a test VM that we can login to (for example photon)
 class test_VM_Keystroke(TestCase):
     vm_name = f"tests__unit__vsphere__Keystroke_{random_string()}"
 

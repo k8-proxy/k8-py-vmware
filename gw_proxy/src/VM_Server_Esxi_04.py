@@ -1,9 +1,8 @@
 from pprint import pprint
 
-from osbot_utils.utils.Misc import random_string
+from osbot_utils.utils.Misc import random_string, random_password
 
 from k8_vmware.Config import Config
-from k8_vmware.helpers.for_osbot_utils.Misc import random_password
 from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
 from k8_vmware.vsphere.ESX_Cli import ESX_Cli
 from k8_vmware.vsphere.Sdk import Sdk

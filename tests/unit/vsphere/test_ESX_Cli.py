@@ -13,7 +13,6 @@ from k8_vmware.vsphere.Sdk import Sdk
 
 class test_ESX_Cli(TestCase):
     @classmethod
-
     def setUpClass(cls) -> None:
         cls.esx_cli     = ESX_Cli()
         cls.ssh_key     = cls.esx_cli.esxi_ssh.ssh_config().get('ssh_key')
