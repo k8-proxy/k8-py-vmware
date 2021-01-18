@@ -3,7 +3,7 @@ from unittest import TestCase
 from pytest import skip
 from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
 
-
+# todo add support for ssh keys in GitHub actions
 class test_ESXi_Ssh(TestCase):
 
     def setUp(self) -> None:

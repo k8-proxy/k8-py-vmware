@@ -1,41 +1,39 @@
 from unittest import TestCase
-import os
 from urllib.request import urlopen
-from k8_vmware.vsphere.OVA import OVA, OvfHandler, FileHandle, WebHandle
-from k8_vmware.vsphere.Sdk import Sdk
-import wget
+from osbot_utils.utils.Files import file_exists
 
-class test_OVA(TestCase):
+from k8_vmware.helpers.TestOVA_VM import TestOVA_VM
+from k8_vmware.vsphere.OVA import OVA, OvfHandler, FileHandle, WebHandle
+
+class test_OVA(TestOVA_VM):
     def setUp(self) -> None:
         self.ova = OVA()
 
     def test__init__(self):
         assert self.ova.sdk is not None
 
+    def test_download_ova_file(self):
+        self.ova.download_ova_file(self.url,self.ova_path)
+        assert file_exists(self.ova_path)
+
     def test_upload_ova_file(self):
-        sdk=Sdk()
-        if not os.path.exists('./test.ova'):
-            url = "https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
-            wget.download(url, './test.ova')
-        ova_path="./test.ova"
-        self.ova.upload_ova(ova_path)
-        self.vm = sdk.find_by_name("Photon OS")
-        print(self.vm)
+        self.ova.download_ova_file(self.url, self.ova_path)
+        assert file_exists(self.ova_path)
+        self.ova.upload_ova(self.ova_path)
+        self.vm = self.ova.sdk.find_by_name(self.vm_name)
+        assert self.vm is not None
         self.vm.task().delete()
 
     # def test_upload_ova_web(self):
-    #     sdk=Sdk()
     #     url = "https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
     #     self.ova.upload_ova(url)
-    #     self.vm = sdk.find_by_name("Photon OS")
-    #     print(self.vm)
+    #     self.vm = self.ova.sdk.find_by_name("Photon OS")
+    #     assert self.vm is not None
     #     self.vm.task().delete()
 
-class test_OvfHandler(TestCase):
+class test_OvfHandler(TestOVA_VM):
     def setUp(self) -> None:
-        self.ova_path="./test.ova"
         self.ova_handler = OvfHandler(self.ova_path)
-        self.url="https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
 
     def test_create_file_handle(self):
         response=self.ova_handler._create_file_handle(self.url)
@@ -57,11 +55,10 @@ class test_OvfHandler(TestCase):
             self.ova_handler.get_device_url(fileItem='fileItem',lease='lease')
         assert context is not None
 
-class test_file_handle(TestCase):
+class test_file_handle(TestOVA_VM):
     def setUp(self) -> None:
-        self.file = "./test.ova"
-        self.filehandle=FileHandle(self.file)
-        self.ovfhandler=OvfHandler(self.file)
+        self.filehandle=FileHandle(self.ova_path)
+        self.ovfhandler=OvfHandler(self.ova_path)
 
     def test_init(self):
         assert self.filehandle is not None
@@ -80,21 +77,20 @@ class test_file_handle(TestCase):
         assert response is 50
 
     def test_seek(self):
-        r=self.filehandle.seek(offset=1,whence=0)
-        assert r is 1
+        response=self.filehandle.seek(offset=1,whence=0)
+        assert response is 1
 
         expected = self.filehandle.offset + 1
-        r=self.filehandle.seek(offset=1,whence=1)
-        assert r is expected
+        response=self.filehandle.seek(offset=1,whence=1)
+        assert response is expected
 
-        r = self.filehandle.seek(offset=1,whence=2)
-        assert r is not None
+        response = self.filehandle.seek(offset=1,whence=2)
+        assert response is not None
 
-class test_web_handle(TestCase):
+class test_web_handle(TestOVA_VM):
     def setUp(self) -> None:
-        self.url = "https://packages.vmware.com/photon/4.0/Beta/ova/photon-hw11-4.0-d98e681.ova"
-        self.webhandle=WebHandle(url=self.url)
         self.ovfhandler=OvfHandler(self.url)
+        self.webhandle=WebHandle(url=self.url)
 
     def test_init(self):
         assert self.webhandle is not None
@@ -113,21 +109,17 @@ class test_web_handle(TestCase):
         assert response is 50
 
     def test_headers_to_dict(self):
-        r = urlopen(self.url)
-        response=self.webhandle._headers_to_dict(r=r)
+        response = urlopen(self.url)
+        response=self.webhandle._headers_to_dict(r=response)
         assert 'accept-ranges' in response
 
     def test_seek(self):
-        r=self.webhandle.seek(offset=1,whence=0)
-        assert r is 1
+        response=self.webhandle.seek(offset=1,whence=0)
+        assert response is 1
 
         expected = self.webhandle.offset +1
-        r=self.webhandle.seek(offset=1,whence=1)
-        assert r is expected
+        response=self.webhandle.seek(offset=1,whence=1)
+        assert response is expected
 
-        r = self.webhandle.seek(offset=1,whence=2)
-        assert r is not None
-
-    def tearDown(self) -> None:
-        if os.path.exists('./test.ova'):
-            os.remove('./test.ova')
+        response = self.webhandle.seek(offset=1,whence=2)
+        assert response is not None

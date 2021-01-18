@@ -8,5 +8,4 @@ pytest-cov
 coveralls
 #pytest-xdist       # didn't work (need to find out why)
 coverage
-wget
 

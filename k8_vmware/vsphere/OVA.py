@@ -11,11 +11,11 @@ from argparse import ArgumentParser
 from getpass import getpass
 
 import pyVmomi
-from osbot_utils.utils.Files import file_exists
+from osbot_utils.utils.Files import file_exists, file_not_exists
 from six.moves.urllib.request import Request, urlopen
 
 from k8_vmware.vsphere.Sdk import Sdk
-
+from osbot_utils.utils       import Http
 
 class OVA:
 
@@ -24,8 +24,11 @@ class OVA:
 
     def upload_ova(self, ova_path):
         sdk = self.sdk
+        #assert file_exists(ova_path)
+        # todo: add explicit check for file exists and return error
+        # todo: normalise method return values
         ovf_handle = OvfHandler(ova_path)
-        
+
         ovfManager = sdk.content().ovfManager
         rp = sdk.resource_pool()
         ds = sdk.datastore()
@@ -52,6 +55,10 @@ class OVA:
         result = ovf_handle.upload_disks(lease, host)
         print(result)
 
+    def download_ova_file(self, url, target_ova_path):
+        if file_not_exists(target_ova_path):
+            Http.GET_bytes_to_file(url, target_ova_path)
+        return target_ova_path
 
 def get_tarfile_size(tarfile):
     """
@@ -65,7 +72,7 @@ def get_tarfile_size(tarfile):
     tarfile.seek(0, 0)
     return size
 
-class OvfHandler(object):
+class OvfHandler(object):  #todo: Create sepeate class
     """
     OvfHandler handles most of the OVA operations.
     It processes the tarfile, matches disk keys to files and
@@ -178,7 +185,7 @@ class OvfHandler(object):
             pass
 
 
-class FileHandle(object):
+class FileHandle(object):  #todo: Create sepeate class
     def __init__(self, filename):
         self.filename = filename
         self.fh = open(filename, 'rb')
@@ -215,7 +222,7 @@ class FileHandle(object):
         return int(100.0 * self.offset / self.st_size)
 
 
-class WebHandle(object):
+class WebHandle(object):   #todo: Create sepeate class
     def __init__(self, url):
         self.url = url
         r = urlopen(url)

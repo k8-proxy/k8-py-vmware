@@ -25,7 +25,7 @@ class test_VM_Server_Esxi_04(TestCase):
         assert user_id in set(self.vm_server.esx_cli.system_account_list(index_by='UserID'))
         with Sdk_User(user_id=result['user_id'], password=result['password']) as sdk_user:                                # login to server with the temp user
             assert sdk_user.login_result is True
-        #pprint(result)
+        pprint(result)
 
 
     #def test_user(self):

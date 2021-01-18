@@ -4,7 +4,7 @@ import pytest
 from unittest import TestCase
 from k8_vmware.vsphere.Sdk import Sdk
 from k8_vmware.vsphere.VM_Process import VM_Process
-
+# todo this test needs a test VM that we can login to
 class test_VM_Process(TestCase):
     def setUp(self) -> None:
         self.sdk        = Sdk()
