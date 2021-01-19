@@ -1,15 +1,12 @@
 import os
 import sys
 import tarfile
-
 import pyVmomi
 import ssl
 from six.moves.urllib.request import Request, urlopen
 from threading import Timer
-
 from k8_vmware.vsphere.ova_utils.File_Handle import FileHandle
 from k8_vmware.vsphere.ova_utils.Web_Handle import WebHandle
-
 
 class OvfHandler(object):
     """

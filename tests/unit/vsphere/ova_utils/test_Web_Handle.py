@@ -1,7 +1,6 @@
 from k8_vmware.helpers.TestCase_OVA import TestCase_OVA
 from k8_vmware.vsphere.ova_utils.OVF_Handler import OvfHandler
 from k8_vmware.vsphere.ova_utils.Web_Handle import WebHandle
-
 from six.moves.urllib.request import urlopen
 
 class test_web_handle(TestCase_OVA):

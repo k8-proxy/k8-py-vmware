@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 from osbot_utils.utils.Files import file_exists
 
 from k8_vmware.helpers.TestCase_OVA import TestCase_OVA

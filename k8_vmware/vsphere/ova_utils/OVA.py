@@ -1,22 +1,9 @@
-import atexit
-import os
-import os.path
-import ssl
-import sys
-import tarfile
 import time
-
-from threading import Timer
-from argparse import ArgumentParser
-from getpass import getpass
-
 import pyVmomi
 from osbot_utils.utils import Http
-from osbot_utils.utils.Files import file_exists, file_not_exists
-
+from osbot_utils.utils.Files import file_not_exists
 from k8_vmware.vsphere.ova_utils.OVF_Handler import OvfHandler
 from k8_vmware.vsphere.Sdk import Sdk
-
 
 class OVA:
 

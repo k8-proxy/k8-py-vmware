@@ -1,6 +1,5 @@
 import os
 
-
 class FileHandle(object):
     def __init__(self, filename):
         self.filename = filename
