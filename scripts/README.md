@@ -1,6 +1,6 @@
 # scripts
 
-## vm_utils.py :
+## esxi_power.py :
 - Contains method to start or stop VM based on input conditions.
 
 - Required environment variables:
