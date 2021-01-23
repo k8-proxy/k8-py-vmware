@@ -2,7 +2,6 @@ from unittest import TestCase
 
 import pyVmomi
 
-from k8_vmware.helpers.View_Soap_Calls import View_Soap_Calls
 from k8_vmware.linux.Ubuntu import Ubuntu
 from k8_vmware.vsphere.VM_Create import VM_Create
 
