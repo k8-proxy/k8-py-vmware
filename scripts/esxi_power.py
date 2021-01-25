@@ -4,6 +4,7 @@ import datetime
 import time
 
 from k8_vmware.vsphere.Sdk import Sdk
+from .utils import Utils
 
 
 class Esxi_Power:
@@ -38,7 +39,7 @@ class Esxi_Power:
         print(f"{vm_name} : {action}")
         try:
             f = getattr(vm, self.action_maps.get(action))
-            f()
+            # f()
         except Exception as ex:
             raise Exception(str(ex))
 
@@ -79,21 +80,6 @@ class Esxi_Power:
         else:
             print("No VM was Altered !")
 
-    def format_expected_date(self, dt):
-        try:
-            day, time = dt.split(",")
-            d = datetime.date.today()
-            while d.strftime("%A") != day.title():
-                d += datetime.timedelta(1)
-
-            d = datetime.datetime.strftime(d, "%Y-%m-%d")
-            d = d + " " + time
-            d = datetime.datetime.strptime(d, self.dt_format)
-            d = datetime.datetime.strftime(d, self.dt_format)
-        except:
-            raise Exception("input date should have format eg. `Friday,10:30AM`")
-        return d
-
     def validate_scheduled_mode(self):
         expected_dt = None
         if self.mode_tag == "start":
@@ -117,7 +103,7 @@ class Esxi_Power:
         if self.auto == 1:
             print("scheduled mode...")
             expected_dt = self.validate_scheduled_mode()
-            expected_dt = self.format_expected_date(expected_dt)
+            expected_dt = Utils.format_expected_date(expected_dt, self.dt_format)
 
             # wait until time
             current_dt = None
