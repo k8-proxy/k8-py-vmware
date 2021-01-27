@@ -1,28 +1,20 @@
 from six.moves.urllib.request import Request, urlopen
 
-class WebHandle(object):
+from k8_vmware.vsphere.ova_utils.OVA_Utils import OVA_Utils
+class Web_Handle(object):
     def __init__(self, url):
         self.url = url
+        self.helper=OVA_Utils()
+
         r = urlopen(url)
         if r.code != 200:
             raise FileNotFoundError(url)
-        self.headers = self._headers_to_dict(r)
+
+        self.headers = self.helper._headers_to_dict(response=r)
         if 'accept-ranges' not in self.headers:
             raise Exception("Site does not accept ranges")
         self.st_size = int(self.headers['content-length'])
         self.offset = 0
-
-    def _headers_to_dict(self, r):
-        result = {}
-        if hasattr(r, 'getheaders'):
-            for n, v in r.getheaders():
-                result[n.lower()] = v.strip()
-        else:
-            for line in r.info().headers:
-                if line.find(':') != -1:
-                    n, v = line.split(': ', 1)
-                    result[n.lower()] = v.strip()
-        return result
 
     def tell(self):
         return self.offset

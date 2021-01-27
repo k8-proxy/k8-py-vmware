@@ -1,9 +1,12 @@
+import logging
 import time
 import pyVmomi
 from osbot_utils.utils import Http
 from osbot_utils.utils.Files import file_not_exists
-from k8_vmware.vsphere.ova_utils.OVF_Handler import OvfHandler
+from k8_vmware.vsphere.ova_utils.OVF_Handler import Ovf_Hanlder
 from k8_vmware.vsphere.Sdk import Sdk
+
+logger = logging.getLogger(__name__)
 
 class OVA:
 
@@ -15,7 +18,7 @@ class OVA:
         # assert file_exists(ova_path)
         # todo: add explicit check for file exists and return error
         # todo: normalise method return values
-        ovf_handle   =     OvfHandler(ova_path)
+        ovf_handle   =     Ovf_Hanlder(ova_path)
 
         ovfManager   =     sdk.content().ovfManager
         rp           =     sdk.resource_pool()
@@ -31,7 +34,7 @@ class OVA:
         lease_state=self.check_lease_state(lease)
         if lease_state == 0:
             host       =    sdk.server_details().get('host')
-            print("Starting deploy...")
+            logger.info("Starting deploy...")
             result     =    ovf_handle.upload_disks(lease, host)
             return result
         else:
@@ -39,17 +42,16 @@ class OVA:
 
     def check_lease_state(self,lease):
         if lease.state == pyVmomi.vim.HttpNfcLease.State.error:
-            print("Lease error: %s" % lease.error)
+            logger.info("Lease error: %s" % lease.error)
             return -1
 
         if lease.state == pyVmomi.vim.HttpNfcLease.State.done:
             return 1
-
         return 0
 
     def wait_for_lease(self, lease):
         while lease.state == pyVmomi.vim.HttpNfcLease.State.initializing:
-            print("Waiting for lease to be ready...")
+            logger.info("Waiting for lease to be ready...")
             time.sleep(1)
 
     def download_ova_file(self, url, target_ova_path):

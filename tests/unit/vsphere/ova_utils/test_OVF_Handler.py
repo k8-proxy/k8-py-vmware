@@ -6,14 +6,15 @@ from osbot_utils.utils.Files import file_exists
 from k8_vmware.helpers.TestCase_OVA import TestCase_OVA
 from k8_vmware.vsphere.ova_utils.File_Handle import FileHandle
 from k8_vmware.vsphere.ova_utils.OVA import OVA
-from k8_vmware.vsphere.ova_utils.OVF_Handler import OvfHandler
-from k8_vmware.vsphere.ova_utils.Web_Handle import WebHandle
+from k8_vmware.vsphere.ova_utils.OVF_Handler import Ovf_Hanlder
+from k8_vmware.vsphere.ova_utils.Web_Handle import Web_Handle
 
 class test_OvfHandler(TestCase_OVA):
     def setUp(self) -> None:
-        self.ova = OVA()
+        self.ova          =   OVA()
+        self.ova_handler  =   Ovf_Hanlder(self.ova_path)
         self.ova.download_ova_file(self.url, self.ova_path)
-        self.ova_handler = OvfHandler(self.ova_path)
+
 
     def test_init(self):
         assert file_exists(self.ova_path)
@@ -21,7 +22,7 @@ class test_OvfHandler(TestCase_OVA):
 
     def test_create_file_handle_for_url(self):
         response=self.ova_handler._create_file_handle(self.url)
-        assert type(response) is type( WebHandle(self.url) )
+        assert type(response) is type(Web_Handle(self.url))
 
     def test_create_file_handle_for_path(self):
         response=self.ova_handler._create_file_handle(self.ova_path)

@@ -8,7 +8,7 @@ from k8_vmware.vsphere.ova_utils.OVA import OVA
 
 class test_file_handle(TestCase_OVA):
     def setUp(self) -> None:
-        self.ova = OVA()
+        self.ova   =  OVA()
         self.ova.download_ova_file(self.url, self.ova_path)
         self.filehandle = FileHandle(self.ova_path)
 
@@ -27,25 +27,25 @@ class test_file_handle(TestCase_OVA):
         assert response is True
 
     def test_progress(self):
-        self.filehandle.offset=self.filehandle.st_size/2
-        response = self.filehandle.progress()
+        self.filehandle.offset  =   self.filehandle.st_size/2
+        response                =   self.filehandle.progress()
         assert response is 50
 
     def test_seek(self):
-        response=self.filehandle.seek(offset=1,whence=0)
+        response       =    self.filehandle.seek(offset=1,whence=0)
         assert response is 1
 
-        expected = self.filehandle.offset + 1
-        response=self.filehandle.seek(offset=1,whence=1)
+        expected       =    self.filehandle.offset + 1
+        response       =    self.filehandle.seek(offset=1,whence=1)
         assert response is expected
 
-        expected=self.filehandle.st_size-1
-        response = self.filehandle.seek(offset=1,whence=2)
+        expected       =    self.filehandle.st_size-1
+        response       =    self.filehandle.seek(offset=1,whence=2)
         self.assertEqual(response , self.filehandle.fh.seek(1, 2))
         self.assertEqual(self.filehandle.offset , expected)
 
     def test_read(self):
         amount=10000
-        response=self.filehandle.read(amount=amount)
+        response       =    self.filehandle.read(amount=amount)
         self.assertEqual( len(response.decode("utf-8",errors='ignore')), 10000)
 

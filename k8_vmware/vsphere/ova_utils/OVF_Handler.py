@@ -1,14 +1,19 @@
-import os
+import logging
 import sys
 import tarfile
 import pyVmomi
 import ssl
+
+from osbot_utils.utils.Files import file_exists
 from six.moves.urllib.request import Request, urlopen
 from threading import Timer
 from k8_vmware.vsphere.ova_utils.File_Handle import FileHandle
-from k8_vmware.vsphere.ova_utils.Web_Handle import WebHandle
+from k8_vmware.vsphere.ova_utils.Web_Handle import Web_Handle
+from k8_vmware.vsphere.ova_utils.OVA_Utils import OVA_Utils
 
-class OvfHandler(object):
+logger = logging.getLogger(__name__)
+
+class Ovf_Hanlder:
     """
     OvfHandler handles most of the OVA operations.
     It processes the tarfile, matches disk keys to files and
@@ -19,22 +24,27 @@ class OvfHandler(object):
         Performs necessary initialization, opening the OVA file,
         processing the files and reading the embedded ovf file.
         """
-        self.handle      =   self._create_file_handle(ovafile)
-        self.tarfile     =   tarfile.open(fileobj=self.handle)
-        ovffilename      =   list(filter(lambda x: x.endswith(".ovf"),
-                                  self.tarfile.getnames()))[0]
-        ovffile          =   self.tarfile.extractfile(ovffilename)
-        self.descriptor  =   ovffile.read().decode()
+        self.utils        =     OVA_Utils()
+        self.handle       =     self._create_file_handle(ovafile)
+        self.tarfile      =     tarfile.open(fileobj=self.handle)
+        ovffilename       =     self.utils.get_ovafilename_from_pattern(tarfile=self.tarfile)
+        ovffile           =     self.tarfile.extractfile(ovffilename)
+        self.descriptor   =     ovffile.read().decode()
+
+    # def get_ovafilename(self,tarfile):
+    #     ovffilename=list(filter(lambda x: x.endswith(".ovf"), tarfile.getnames()))[0]
+    #ovffilename = list(filter(lambda x: x == fileItem.path,self.tarfile.getnames()))[0]
+    #     return ovffilename
 
     def _create_file_handle(self, entry):
         """
         A simple mechanism to pick whether the file is local or not.
         This is not very robust.
         """
-        if os.path.exists(entry):
+        if file_exists(entry):
             return FileHandle(entry)
         else:
-            return WebHandle(entry)
+            return Web_Handle(entry)
 
     def get_descriptor(self):
         return self.descriptor
@@ -50,8 +60,7 @@ class OvfHandler(object):
         """
         Does translation for disk key to file name, returning a file handle.
         """
-        ovffilename = list(filter(lambda x: x == fileItem.path,
-                                  self.tarfile.getnames()))[0]
+        ovffilename=self.utils.get_ovffilename_from_path(tarfile=self.tarfile,path=fileItem.path)
         return self.tarfile.extractfile(ovffilename)
 
     def get_device_url(self, fileItem, lease):
@@ -70,14 +79,14 @@ class OvfHandler(object):
             for fileItem in self.spec.fileItem:
                 self.upload_disk(fileItem, lease, host)
             lease.Complete()
-            print("Finished deploy successfully.")
+            logger.info("Finished deploy successfully.")
             return 0
         except pyVmomi.vmodl.MethodFault as e:
-            print("Hit an error in upload: %s" % e)
+            logger.error("Hit an error in upload: %s" % e)
             lease.Abort(e)
         except Exception as e:
-            print("Lease: %s" % lease.info)
-            print("Hit an error in upload: %s" % e)
+            logger.error("Lease: %s" % lease.info)
+            logger.error("Hit an error in upload: %s" % e)
             lease.Abort(pyVmomi.vmodl.fault.SystemError(reason=str(e)))
             raise
         return -1
@@ -88,17 +97,26 @@ class OvfHandler(object):
         disk directly to the urlopen request.
         """
         ovffile = self.get_disk(fileItem, lease)
-        if ovffile is None:
-            return
-        deviceUrl = self.get_device_url(fileItem, lease)
-        url = deviceUrl.url.replace('*', host)
-        headers = {'Content-length': self.get_tarfile_size(ovffile)}
+        assert ovffile is not None
+
+        deviceUrl   =    self.get_device_url(fileItem, lease)
+        url         =    deviceUrl.url.replace('*', host)
+        headers     =    {'Content-length': self.get_tarfile_size(ovffile)}
+
+        sslContext  =    self.get_ssl_context()
+        req         =    Request(url, ovffile, headers)
+        self.request_urlopen(req, sslContext)
+
+    def request_urlopen(self,req,sslContext):
+        urlopen(req, context=sslContext)
+
+
+    def get_ssl_context(self):
         if hasattr(ssl, '_create_unverified_context'):
             sslContext = ssl._create_unverified_context()
         else:
             sslContext = None
-        req = Request(url, ovffile, headers)
-        urlopen(req, context=sslContext)
+        return sslContext
 
     def start_timer(self):
         """

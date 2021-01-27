@@ -5,7 +5,7 @@ from k8_vmware.vsphere.ova_utils.OVA import OVA
 
 class test_OVA(TestCase_OVA):
     def setUp(self) -> None:
-        self.ova = OVA()
+        self.ova  =  OVA()
 
     def test__init__(self):
         assert self.ova.sdk is not None
@@ -17,8 +17,10 @@ class test_OVA(TestCase_OVA):
     def test_upload_ova_file(self):
         self.ova.download_ova_file(self.url, self.ova_path)
         assert file_exists(self.ova_path)
+
         response=self.ova.upload_ova(self.ova_path)
         assert response is 0
+
         self.vm = self.ova.sdk.find_by_name(self.vm_name)
         assert self.vm is not None
         self.vm.task().delete()
