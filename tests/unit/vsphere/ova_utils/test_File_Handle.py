@@ -39,8 +39,10 @@ class test_file_handle(TestCase_OVA):
         response=self.filehandle.seek(offset=1,whence=1)
         assert response is expected
 
+        expected=self.filehandle.st_size-1
         response = self.filehandle.seek(offset=1,whence=2)
-        assert response is not None
+        self.assertEqual(response , self.filehandle.fh.seek(1, 2))
+        self.assertEqual(self.filehandle.offset , expected)
 
     def test_read(self):
         amount=10000
