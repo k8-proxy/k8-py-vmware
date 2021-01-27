@@ -9,11 +9,13 @@ class test_web_handle(TestCase_OVA):
         self.webhandle=WebHandle(url=self.url)
 
     def test_init(self):
-        assert self.webhandle is not None
+        assert self.webhandle.url is self.url
+        assert self.webhandle.offset is 0
 
     def test_tell(self):
+        self.webhandle.offset = 50
         response=self.webhandle.tell()
-        assert response is not None
+        assert response is 50
 
     def test_seekable(self):
         response=self.webhandle.seekable()
@@ -33,9 +35,10 @@ class test_web_handle(TestCase_OVA):
         response=self.webhandle.seek(offset=1,whence=0)
         assert response is 1
 
-        expected = self.webhandle.offset +1
+        expected = self.webhandle.offset + 1
         response=self.webhandle.seek(offset=1,whence=1)
         assert response is expected
 
+        expected=self.webhandle.st_size - 1
         response = self.webhandle.seek(offset=1,whence=2)
-        assert response is not None
+        self.assertEqual(response, expected)

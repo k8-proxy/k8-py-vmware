@@ -19,12 +19,12 @@ class OvfHandler(object):
         Performs necessary initialization, opening the OVA file,
         processing the files and reading the embedded ovf file.
         """
-        self.handle = self._create_file_handle(ovafile)
-        self.tarfile = tarfile.open(fileobj=self.handle)
-        ovffilename = list(filter(lambda x: x.endswith(".ovf"),
+        self.handle      =   self._create_file_handle(ovafile)
+        self.tarfile     =   tarfile.open(fileobj=self.handle)
+        ovffilename      =   list(filter(lambda x: x.endswith(".ovf"),
                                   self.tarfile.getnames()))[0]
-        ovffile = self.tarfile.extractfile(ovffilename)
-        self.descriptor = ovffile.read().decode()
+        ovffile          =   self.tarfile.extractfile(ovffilename)
+        self.descriptor  =   ovffile.read().decode()
 
     def _create_file_handle(self, entry):
         """

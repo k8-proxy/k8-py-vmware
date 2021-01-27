@@ -1,3 +1,5 @@
+import os
+
 from osbot_utils.utils.Files import file_exists
 from k8_vmware.helpers.TestCase_OVA import TestCase_OVA
 from k8_vmware.vsphere.ova_utils.File_Handle import FileHandle
@@ -12,7 +14,9 @@ class test_file_handle(TestCase_OVA):
 
     def test_init(self):
         assert file_exists(self.ova_path)
-        assert self.filehandle is not None
+        assert self.filehandle.filename is self.ova_path
+        assert self.filehandle.offset is 0
+        self.assertEqual(self.filehandle.st_size ,os.stat(self.ova_path).st_size)
 
     def test_tell(self):
         response=self.filehandle.tell()

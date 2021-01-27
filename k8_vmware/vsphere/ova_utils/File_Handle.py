@@ -2,11 +2,10 @@ import os
 
 class FileHandle(object):
     def __init__(self, filename):
-        self.filename = filename
-        self.fh = open(filename, 'rb')
-
-        self.st_size = os.stat(filename).st_size
-        self.offset = 0
+        self.filename    =    filename
+        self.fh          =    open(filename, 'rb')
+        self.st_size     =    os.stat(filename).st_size
+        self.offset      =    0
 
     def __del__(self):
         self.fh.close()
