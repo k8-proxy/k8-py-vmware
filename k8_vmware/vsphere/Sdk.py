@@ -62,9 +62,12 @@ class Sdk:
         if vm:
             return VM(vm)
 
-    def find_by_uuid(self, uuid):
+    def find_by_uuid(self, uuid, instance_uuid=False):
         search_index = self.content().searchIndex
-        vm = search_index.FindByUuid(datacenter=None, uuid=uuid, vmSearch=True)
+        if instance_uuid:
+            vm = search_index.FindByUuid(datacenter=None, uuid=uuid, vmSearch=True, instanceUuid=True)
+        else:
+            vm = search_index.FindByUuid(datacenter=None, uuid=uuid, vmSearch=True)
         if vm:
             return VM(vm)
 
@@ -197,14 +200,44 @@ class Sdk:
         for child in self.content().rootFolder.childEntity:
             if child._wsdlName == 'Datacenter':
                 return child
-
+            
     def datacenter_folder(self):
         datacenter = self.datacenter()
         if hasattr(datacenter, 'vmFolder'):
             return datacenter.vmFolder
 
-    def datastore(self):
+    def datastore(self, name=None):
         return self.get_objects_Datastore().pop()
+    
+    def get_datastore_by_name(self, dc, name): # dc is datacenter
+        """
+        Pick a datastore by its name.
+        """
+        for ds in dc.datastore:
+            try:
+                if ds.name == name:
+                    return ds
+            except:  # Ignore datastores that have issues
+                pass
+        raise Exception("Failed to find %s on datacenter %s" % (name, dc.name))
+    
+    def get_largest_free_ds(self, dc):
+        """
+        Pick the datastore that is accessible with the largest free space.
+        """
+        largest = None
+        largestFree = 0
+        for ds in dc.datastore:
+            try:
+                freeSpace = ds.summary.freeSpace
+                if freeSpace > largestFree and ds.summary.accessible:
+                    largestFree = freeSpace
+                    largest = ds
+            except:  # Ignore datastores that have issues
+                pass
+        if largest is None:
+            raise Exception('Failed to find any free datastores on %s' % dc.name)
+        return largest
 
     def folders(self):
         folders = []
@@ -306,6 +339,42 @@ class Sdk:
         for host in hosts:
             if hasattr(host, 'resourcePool'):
                 return host.resourcePool
+    
+    def get_resource_pool_by_name(self, si, dc, name):
+        """
+        Get a resource pool in the datacenter by its names.
+        """
+        viewManager = si.content.viewManager
+        containerView = viewManager.CreateContainerView(dc, [vim.ResourcePool],
+                                                        True)
+        try:
+            for rp in containerView.view:
+                if rp.name == name:
+                    return rp
+        finally:
+            containerView.Destroy()
+        raise Exception("Failed to find resource pool %s in datacenter %s" %
+                        (name, dc.name))
+
+    def get_largest_free_rp(self, si, dc):
+        """
+        Get the resource pool with the largest unreserved memory for VMs.
+        """
+        viewManager = si.content.viewManager
+        containerView = viewManager.CreateContainerView(dc, [vim.ResourcePool],
+                                                        True)
+        largestRp = None
+        unreservedForVm = 0
+        try:
+            for rp in containerView.view:
+                if rp.runtime.memory.unreservedForVm > unreservedForVm:
+                    largestRp = rp
+                    unreservedForVm = rp.runtime.memory.unreservedForVm
+        finally:
+            containerView.Destroy()
+        if largestRp is None:
+            raise Exception("Failed to find a resource pool in dc %s" % dc.name)
+        return largestRp
 
     def vm(self, vm_name):
         vm = self.get_object_virtual_machine(vm_name)

@@ -23,7 +23,7 @@ class OVA:
     def __init__(self): # todo add methods to manipulated OVA files
         self.sdk = Sdk()
 
-    def upload_ova(self, ova_path):
+    def upload_ova(self, ova_path, vm_name=""):
         sdk = self.sdk
         # assert file_exists(ova_path)
         # todo: add explicit check for file exists and return error
@@ -34,7 +34,7 @@ class OVA:
         rp = sdk.resource_pool()
         ds = sdk.datastore()
         dc = sdk.datacenter()
-        cisp = pyVmomi.vim.OvfManager.CreateImportSpecParams()
+        cisp = pyVmomi.vim.OvfManager.CreateImportSpecParams(entityName=vm_name)
         cisr = ovfManager.CreateImportSpec(ovf_handle.get_descriptor(), rp, ds, cisp)
         ovf_handle.set_spec(cisr)
 
