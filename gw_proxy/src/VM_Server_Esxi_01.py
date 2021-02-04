@@ -7,7 +7,7 @@ from k8_vmware.vsphere.ESXi_Ssh import ESXi_Ssh
 from k8_vmware.vsphere.ESX_Cli import ESX_Cli
 from k8_vmware.vsphere.Sdk import Sdk
 
-class VM_Server_Esxi_04:
+class VM_Server_Esxi_01:
 
     def __init__(self):
         self.sdk  = Sdk()
@@ -17,7 +17,7 @@ class VM_Server_Esxi_04:
     def create_admin_user(self, user_id):
 
         password    = random_password()
-        description = "admin user for server esxi04"
+        description = "guest admin user for server"
         self.esx_cli.system_account_remove(user_id)
         account_create = self.esx_cli.system_account_create(user_id, password, description)
         permission_set = self.esx_cli.system_permission_set(user_id, "Admin")
