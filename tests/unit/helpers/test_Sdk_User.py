@@ -1,9 +1,7 @@
 from unittest import TestCase
-
 from k8_vmware.Config import Config
 from k8_vmware.helpers.Sdk_User import Sdk_User
 from k8_vmware.vsphere.Sdk import Sdk
-
 
 class test_Sdk_User(TestCase):
 

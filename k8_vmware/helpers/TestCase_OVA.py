@@ -7,9 +7,9 @@ class TestCase_OVA(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.url: str = cls.url
-        cls.ova_path: str = cls.ova_path
-        cls.vm_name: str = cls.vm_name
+        cls.url       : str       =    cls.url
+        cls.ova_path  : str       =    cls.ova_path
+        cls.vm_name   : str       =    cls.vm_name
 
     @classmethod
     def tearDownClass(cls) -> None:
