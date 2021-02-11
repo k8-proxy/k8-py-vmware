@@ -36,4 +36,15 @@ Configure the environment variables, by renaming the `.env.example` file top `.e
 
 ```export VSPHERE_HOST={IP of ESXi server}
 export VSPHERE_USERNAME={username}
-export VSPHERE_PASSWORD={password}``` 
+export VSPHERE_PASSWORD={password}
+```
+## run ova deployment
+
+```
+cd k8-vmware/
+python -m gw_proxy.src.ova_deployment.main 
+       -s VSPHERE_HOST
+       -u VSPHERE_USERNAME
+       --ova-path YOUR_OVA_PATH_OR_REMOTE_URL
+       --vm-name TARGET_VM_NAME
+```
