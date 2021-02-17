@@ -15,12 +15,20 @@ Other similar implementations and good sources of pyvmomi examples:
 
 
 
+## ESXI01 reset procedure
+* **Note**: After reset, this command must be executed so that packer could build and push images.
+
+```esxcli system settings advanced set -o /Net/GuestIPHack -i 1```
+
+- [Reference](https://www.packer.io/docs/builders/vmware/iso)
+
 
 ## Dev machine install
 
 To install dependencies run command
 
 ```pip3 install -r requirements.txt```
+
 
 ## run tests
 
@@ -37,3 +45,5 @@ Configure the environment variables, by renaming the `.env.example` file top `.e
 ```export VSPHERE_HOST={IP of ESXi server}
 export VSPHERE_USERNAME={username}
 export VSPHERE_PASSWORD={password}``` 
+
+
